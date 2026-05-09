@@ -1,0 +1,68 @@
+package com.example.myapplication.ui.viewModel
+
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.api.RetroFitClient
+import com.example.myapplication.model.LikeRequest
+import com.example.myapplication.model.Post
+import com.example.myapplication.util.GlobalData
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+
+class DetailPostViewModel : ViewModel() {
+    var post by mutableStateOf<Post?>(null)
+    var likeCount by mutableIntStateOf(0)
+    var isLoading by mutableStateOf(false)
+    var isLikeLoading by mutableStateOf(false)
+    var isLiked by mutableStateOf(false)
+
+    fun fetchPostDetail(postId: String) {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val token = "Bearer ${GlobalData.tokenUser}"
+                val detailReq = async { RetroFitClient.instance.getPostDetail(postId) }
+                val likesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
+                // Cek status like user saat ini
+                val isLikedReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
+
+                post = detailReq.await()
+                likeCount = likesReq.await()
+                isLiked = isLikedReq.await()
+            } catch (e: Exception) {
+                Log.e("DETAIL_ERROR", e.message.toString())
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    fun likePost(postId: String) {
+        viewModelScope.launch {
+            isLikeLoading = true
+            try {
+                val token = "Bearer ${GlobalData.tokenUser}"
+
+                // A. Jalankan aksi Like ke server
+                RetroFitClient.instance.toggleLike(LikeRequest(postId), token)
+
+                // B. Ambil angka Like terbaru dari server (agar sinkron)
+                val updatedLikes = RetroFitClient.instance.getPostDetailLikes(postId)
+                val updatedStatus = RetroFitClient.instance.checkIsLiked(postId, token)
+
+
+                // C. Update State, UI otomatis berubah
+                likeCount = updatedLikes
+
+            } catch (e: Exception) {
+                Log.e("LIKE_ERROR", e.message.toString())
+            } finally {
+                isLikeLoading = false
+            }
+        }
+    }
+}
