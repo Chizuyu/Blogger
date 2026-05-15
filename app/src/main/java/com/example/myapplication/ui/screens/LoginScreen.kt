@@ -128,11 +128,8 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    // Memanggil fungsi doLogin di ViewModel
                     viewModel.doLogin(name, pass) {
-                        // Blok ini hanya dijalankan jika login sukses (onSuccess)
                         navController.navigate("home_screen/$name") {
-                            // Menghapus halaman login dari history back
                             popUpTo(Screen.Login.route) {
                                 inclusive = true
                             }
@@ -148,7 +145,6 @@ fun LoginScreen(
                 enabled = !viewModel.isLoading
             ) {
                 if (viewModel.isLoading) {
-                    // Menampilkan muter-muter saat loading
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
                     Text("Login", fontSize = 16.sp, fontWeight = FontWeight.Bold)

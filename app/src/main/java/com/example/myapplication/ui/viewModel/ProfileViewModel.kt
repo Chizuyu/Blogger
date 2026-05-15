@@ -23,7 +23,6 @@ class ProfileViewModel : ViewModel() {
     var profileData by mutableStateOf<Profile?>(null)
     var postList by mutableStateOf<List<Post>>(emptyList())
 
-    // Gunakan String (bukan String?) agar input tidak muncul tulisan "null"
     var firstName by mutableStateOf("")
     var lastName by mutableStateOf("")
     var username by mutableStateOf("")
@@ -52,7 +51,6 @@ class ProfileViewModel : ViewModel() {
                     dateOfBirth = response.dateOfBirth,
                     photo = response.photo
                 )
-                // Isi field otomatis
                 firstName = response.firstName ?: ""
                 lastName = response.lastName ?: ""
                 username = response.username ?: ""
@@ -65,7 +63,6 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun updateProfileData(context: Context, onSuccess: () -> Unit) {
-        // Validasi: Sesuai Swagger, password WAJIB dikirim dan tidak boleh kosong
         if (password.isEmpty()) {
             errorMessage = "Password wajib diisi untuk verifikasi update"
             return
@@ -79,7 +76,6 @@ class ProfileViewModel : ViewModel() {
             isLoading = true
             errorMessage = ""
             try {
-                // Buat request objek sesuai Swagger (4 field wajib)
                 val request = UpdateProfileRequest(
                     firstName = firstName,
                     lastName = lastName,
@@ -90,7 +86,6 @@ class ProfileViewModel : ViewModel() {
                 val response = RetroFitClient.instance.updateProfile(request, token)
 
                 if (response.isSuccessful) {
-                    // Jika teks sukses, baru upload foto
                     selectedImageUri?.let { uploadPhoto(context, it, token) }
                     onSuccess()
                 } else {
@@ -116,7 +111,6 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    // FUNGSI LAINNYA (Post Terkait User)
     fun fetchLikedPost() {
         viewModelScope.launch {
             isLoading = true

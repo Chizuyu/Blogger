@@ -139,7 +139,7 @@ fun ProfileItem(
                     }
                     Button(
                         onClick = {
-
+                            navController.navigate("create_post")
                         },
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.weight(1f),

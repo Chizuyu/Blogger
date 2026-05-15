@@ -1,5 +1,7 @@
 package com.example.myapplication.api
 
+import com.example.myapplication.model.Category
+import com.example.myapplication.model.CreatePostRequest
 import com.example.myapplication.model.LikeRequest
 import com.example.myapplication.model.LoginResponse
 import com.example.myapplication.model.Post
@@ -51,8 +53,6 @@ interface ApiService{
         @Header("Authorization") token: String
     ): Boolean
 
-        //Update Profile
-
     @GET("api/me")
     suspend fun getCurrentUser(@Header("Authorization") token: String): User
 
@@ -80,6 +80,31 @@ interface ApiService{
     @POST("api/posts/like")
     suspend fun toggleLike(
         @Body request: LikeRequest,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
+
+    @POST("api/posts")
+    suspend fun createPost(
+        @Body request: CreatePostRequest,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Post>
+
+    @Multipart
+    @POST("api/posts/{postId}/thumbnail")
+    suspend fun uploadThumbnail(
+        @Path("postId") postId: String,
+        @Part photo: MultipartBody.Part,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
+
+    @GET("api/categories")
+    suspend fun getCategories(): List<Category>
+
+    @Multipart
+    @POST("api/posts/{postId}/image")
+    suspend fun uploadImageContent(
+        @Path("postId") postId: String,
+        @Part photo: MultipartBody.Part,
         @Header("Authorization") token: String
     ): retrofit2.Response<Unit>
 

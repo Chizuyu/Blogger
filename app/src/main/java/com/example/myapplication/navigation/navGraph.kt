@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.myapplication.ui.screens.CreatePostScreen
 import com.example.myapplication.ui.screens.DetailPostScreen
 // Import halaman Anda (Sesuaikan jika nama folder/package berbeda)
 import com.example.myapplication.ui.screens.LoginScreen
@@ -45,6 +46,11 @@ fun SetupNavGraph(navController: NavHostController) {
             route =  Screen.UpdateProfile.route
         ){
             UpdateProfileScreen(navController = navController)
+        }
+        composable(
+            route =  Screen.CreatePost.route
+        ){
+            CreatePostScreen(navController = navController)
         }
     }
 }

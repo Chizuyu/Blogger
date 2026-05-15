@@ -68,13 +68,13 @@ fun UpdateProfileScreen(navController: NavController, viewModel: ProfileViewMode
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
-                    value = viewModel.firstName, // Hapus .toString()
+                    value = viewModel.firstName,
                     onValueChange = { viewModel.firstName = it },
                     label = { Text("Firstname") },
                     modifier = Modifier.weight(1f)
                 )
                 OutlinedTextField(
-                    value = viewModel.lastName, // Hapus .toString()
+                    value = viewModel.lastName,
                     onValueChange = { viewModel.lastName = it },
                     label = { Text("Lastname") },
                     modifier = Modifier.weight(1f)
@@ -84,7 +84,7 @@ fun UpdateProfileScreen(navController: NavController, viewModel: ProfileViewMode
             Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = viewModel.username, // Hapus .toString()
+                value = viewModel.username,
                 onValueChange = { viewModel.username = it },
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth()
@@ -147,7 +147,6 @@ fun UpdateProfileScreen(navController: NavController, viewModel: ProfileViewMode
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
-                // Tombol aktif hanya jika password diisi
                 enabled = !viewModel.isLoading && viewModel.password.isNotEmpty()
             ) {
                 if (viewModel.isLoading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))

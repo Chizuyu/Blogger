@@ -13,9 +13,6 @@ data class Post(
     val category: Category
 )
 
-data class LikedRequest(
-    val postId: String
-)
 data class Author(
     val id: String? = null,
     val firstName: String,
@@ -29,4 +26,11 @@ data class Author(
 data class Category(
     val id: String? = null,
     val name: String
+)
+
+data class CreatePostRequest(
+    val id: String,
+    val categoryId: String,
+    val title: String,
+    val content: String
 )

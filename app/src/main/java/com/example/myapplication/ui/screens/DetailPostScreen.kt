@@ -106,7 +106,6 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                     shape = RoundedCornerShape(12.dp),
                     enabled = !viewModel.isLikeLoading,
                     colors = ButtonDefaults.buttonColors(
-                        // Jika sudah di-like, beri warna merah atau warna lain sebagai indikasi
                         containerColor = if (viewModel.isLiked) Color(0xFFE91E63) else Color(0xFF2196F3)
                     )
                 ) {

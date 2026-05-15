@@ -96,6 +96,9 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(route = Screen.UpdateProfile.route) {
             UpdateProfileScreen(navController = navController)
         }
+        composable(route = Screen.CreatePost.route) {
+            CreatePostScreen(navController = navController)
+        }
     }
 }
 
