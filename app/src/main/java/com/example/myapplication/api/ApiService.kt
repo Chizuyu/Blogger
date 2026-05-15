@@ -54,12 +54,11 @@ interface ApiService{
 
     @POST("api/posts/like")
     suspend fun toggleLike(
-        @Body body: LikeRequest,
+        @Body request: LikeRequest,
         @Header("Authorization") token: String
     ): Unit
 
     //PUT
-    @PUT("api/posts/{id}")
-    suspend fun putLikedPost(
-        @Path("id") id: String, @Header("Authorization") token: String): Post
+
+
 }

@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -184,6 +185,10 @@ fun PostItem(post: Post, navController: NavController) {
 fun DaftarPostScreen(navController: NavController, viewModel: PostViewModel = viewModel()) {
     val listPost = viewModel.postList
     val isLoading = viewModel.isLoading
+
+    LaunchedEffect(Unit) {
+        viewModel.getPosts()
+    }
 
     if(isLoading) {
         CircularProgressIndicator()

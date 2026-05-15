@@ -8,13 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -96,20 +101,24 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                 Spacer(Modifier.height(16.dp))
 
                 Button (
-                    onClick = {
-                        viewModel.likePost(post.id)
-                    },
+                    onClick = { viewModel.likePost(post.id) },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     enabled = !viewModel.isLikeLoading,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2196F3)
+                        // Jika sudah di-like, beri warna merah atau warna lain sebagai indikasi
+                        containerColor = if (viewModel.isLiked) Color(0xFFE91E63) else Color(0xFF2196F3)
                     )
                 ) {
-                    if(viewModel.isLikeLoading){
+                    if (viewModel.isLikeLoading) {
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                    }else{
-                        Text(if (viewModel.isLiked) "Unlike" else "Like")
+                    } else {
+                        Icon(
+                            imageVector = if (viewModel.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = null
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(if (viewModel.isLiked) "Unlike Post" else "Like Post")
                     }
                 }
             }

@@ -26,9 +26,9 @@ class DetailPostViewModel : ViewModel() {
             isLoading = true
             try {
                 val token = "Bearer ${GlobalData.tokenUser}"
+
                 val detailReq = async { RetroFitClient.instance.getPostDetail(postId) }
                 val likesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
-                // Cek status like user saat ini
                 val isLikedReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
 
                 post = detailReq.await()
@@ -47,16 +47,17 @@ class DetailPostViewModel : ViewModel() {
             try {
                 val token = "Bearer ${GlobalData.tokenUser}"
 
-                // A. Jalankan aksi Like ke server
+                // 1. Jalankan aksi Like/Unlike ke server
                 RetroFitClient.instance.toggleLike(LikeRequest(postId), token)
 
-                // B. Ambil angka Like terbaru dari server (agar sinkron)
-                val updatedLikes = RetroFitClient.instance.getPostDetailLikes(postId)
-                val updatedStatus = RetroFitClient.instance.checkIsLiked(postId, token)
+                // 2. Ambil data terbaru dari server
+                // Jalankan paralel agar responsif
+                val updatedLikesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
+                val updatedStatusReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
 
-
-                // C. Update State, UI otomatis berubah
-                likeCount = updatedLikes
+                // 3. Update State (PENTING: Masukkan hasil await ke variabel state)
+                likeCount = updatedLikesReq.await()
+                isLiked = updatedStatusReq.await()
 
             } catch (e: Exception) {
                 Log.e("LIKE_ERROR", e.message.toString())
