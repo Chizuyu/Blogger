@@ -16,4 +16,6 @@ object RetroFitClient {
             .build()
             .create(ApiService::class.java)
     }
+
+    //HAZAMI GANSSSS
 }
