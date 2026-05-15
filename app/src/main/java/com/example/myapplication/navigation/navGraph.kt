@@ -1,6 +1,7 @@
 package com.example.myapplication.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -8,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.myapplication.ui.screens.CreatePostScreen
 import com.example.myapplication.ui.screens.DetailPostScreen
+import com.example.myapplication.ui.screens.EditPostScreen
 // Import halaman Anda (Sesuaikan jika nama folder/package berbeda)
 import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.HomeScreen
@@ -51,6 +53,14 @@ fun SetupNavGraph(navController: NavHostController) {
             route =  Screen.CreatePost.route
         ){
             CreatePostScreen(navController = navController)
+        }
+        // Di file navigation/navGraph.kt
+        composable(
+            route = Screen.EditPost.route,
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString("postId") ?: ""
+            EditPostScreen(navController = navController, postId = postId)
         }
     }
 }

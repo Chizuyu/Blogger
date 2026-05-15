@@ -5,6 +5,7 @@ data class Profile(
     val firstName: String? = null,
     val lastName: String? = null,
     val username: String? = null,
+    val password: String? = null,
     val dateOfBirth: String? = null,
     val joinDate: String? = null,
     val photo: String? = null,

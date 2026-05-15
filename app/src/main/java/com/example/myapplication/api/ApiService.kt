@@ -13,6 +13,7 @@ import com.example.myapplication.model.User
 import okhttp3.MultipartBody
 import okhttp3.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -113,6 +114,19 @@ interface ApiService{
     @PUT("api/me")
     suspend fun updateProfileMap(
         @Body data: Map<String, @JvmSuppressWildcards Any>,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
+
+    @PUT("api/posts/{id}")
+    suspend fun updatePost(
+        @Path("id") id: String,
+        @Body request: CreatePostRequest, // Re-use model yang sama
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
+
+    @DELETE("api/posts/{id}")
+    suspend fun deletePost(
+        @Path("id") id: String,
         @Header("Authorization") token: String
     ): retrofit2.Response<Unit>
 

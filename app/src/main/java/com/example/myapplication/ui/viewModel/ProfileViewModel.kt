@@ -47,6 +47,7 @@ class ProfileViewModel : ViewModel() {
                     firstName = response.firstName,
                     lastName = response.lastName,
                     username = response.username,
+                    password = response.password,
                     joinDate = response.joinDate,
                     dateOfBirth = response.dateOfBirth,
                     photo = response.photo
@@ -108,6 +109,25 @@ class ProfileViewModel : ViewModel() {
             RetroFitClient.instance.uploadProfilePhoto(body, token)
         } catch (e: Exception) {
             Log.e("UPLOAD_ERROR", e.toString())
+        }
+    }
+
+    fun deletePostById(postId: String) {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val response = RetroFitClient.instance.deletePost(postId, token)
+                if (response.isSuccessful) {
+                    // Setelah berhasil hapus, panggil kembali fetchMyPost untuk refresh UI
+                    fetchMyPost()
+                } else {
+                    errorMessage = "Gagal menghapus post"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage ?: "Terjadi kesalahan"
+            } finally {
+                isLoading = false
+            }
         }
     }
 

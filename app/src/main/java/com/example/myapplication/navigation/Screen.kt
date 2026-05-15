@@ -14,6 +14,8 @@ sealed class Screen(val route: String) {
     object Detail : Screen("detail_screen/{postId}")
     object UpdateProfile : Screen("update_profile")
     object CreatePost : Screen("create_post")
+    object EditPost : Screen("edit_post/{postId}")
+
 
 
 }

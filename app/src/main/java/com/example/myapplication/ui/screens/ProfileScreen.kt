@@ -59,6 +59,14 @@ import com.example.myapplication.model.User
 import com.example.myapplication.navigation.Screen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewModel.ProfileViewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ProfileItem(
@@ -68,6 +76,10 @@ fun ProfileItem(
     onTabSelected: (Int) -> Unit,
     navController: NavController
     ){
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var postToDelete by remember { mutableStateOf<com.example.myapplication.model.Post?>(null) }
+    val context = LocalContext.current
+
     val tabs = listOf("MY POST", "LIKED POSTS")
 
     LazyVerticalGrid(
@@ -176,23 +188,102 @@ fun ProfileItem(
         items(viewModel.postList) { post ->
             Card(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(8.dp) // Kurangi padding agar pas 2 kolom
                     .aspectRatio(1f),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                elevation = CardDefaults.cardElevation(2.dp)
             ) {
-                AsyncImage(
-                    model = "${RetroFitClient.BASE_URL}images/${post.thumbnail}",
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable{
-                        navController.navigate("detail_screen/${post.id}")
-                    },
-                    placeholder = painterResource(R.drawable.ic_launcher_foreground)
-                )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // Gambar Post
+                    AsyncImage(
+                        model = "${RetroFitClient.BASE_URL}images/${post.thumbnail}",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                navController.navigate("detail_screen/${post.id}")
+                            },
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground)
+                    )
+
+                    if (selectedTabIndex == 0) {
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd) // Pojok kanan atas
+                                .padding(4.dp)
+                        ) {
+                            // Tombol Edit
+                            IconButton(
+                                onClick = { navController.navigate("edit_post/${post.id}") },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Card(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color.White.copy(
+                                            alpha = 0.8f
+                                        )
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = null,
+                                        tint = Color(0xFF2196F3),
+                                        modifier = Modifier.padding(4.dp).size(20.dp)
+                                    )
+                                }
+                            }
+
+                            // Tombol Delete
+                            IconButton(
+                                onClick = {
+                                    postToDelete = post
+                                    showDeleteDialog = true
+                                },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Card(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color.White.copy(
+                                            alpha = 0.8f
+                                        )
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = null,
+                                        tint = Color.Red,
+                                        modifier = Modifier.padding(4.dp).size(20.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Hapus Postingan?") },
+            text = { Text("Anda yakin ingin menghapus '${postToDelete?.title}'?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    postToDelete?.let { post ->
+                        viewModel.deletePostById(post.id)
+                    }
+                    showDeleteDialog = false
+                }) {
+                    Text("Hapus", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
     }
 }
 @Composable

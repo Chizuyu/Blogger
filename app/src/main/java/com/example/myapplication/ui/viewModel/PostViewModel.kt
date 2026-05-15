@@ -132,6 +132,72 @@ class PostViewModel : ViewModel() {
             }
         }
     }
+
+    // Fungsi Update (Hampir sama dengan create, tapi panggil PUT)
+    fun updateFullPost(context: Context, postId: String) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = ""
+            try {
+                val token = "Bearer ${GlobalData.tokenUser}"
+                val request = CreatePostRequest(
+                    id = postId,
+                    categoryId = selectedCategory?.id!!,
+                    title = title,
+                    content =  content
+                )
+
+                val response = RetroFitClient.instance.updatePost(postId, request, token)
+                if (response.isSuccessful) {
+                    // Upload gambar baru JIKA user memilih file baru (Uri tidak null)
+                    thumbnailUri?.let { uploadFile(context, it, postId, "thumbnail", token) }
+                    imageContentUri?.let { uploadFile(context, it, postId, "image", token) }
+
+                    isCreateSuccess = true
+                }
+            } catch (e: Exception) {
+                errorMessage = "Gagal update"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    fun setEditData(postId: String) {
+        // Cari data post di dalam postList berdasarkan ID
+        val post = postList.find { it.id == postId }
+
+        if (post != null) {
+            // Isi variabel state dengan data dari post tersebut
+            title = post.title
+            content = post.content
+            selectedCategory = post.category
+
+            // Reset nama file agar tidak membingungkan (karena ini data lama)
+            thumbnailName = "Current Thumbnail: ${post.thumbnail ?: "None"}"
+            imageContentName = "Current Image: ${post.imageContent ?: "None"}"
+
+            // Reset URI agar tidak mencoba upload ulang gambar lama kecuali user memilih yang baru
+            thumbnailUri = null
+            imageContentUri = null
+        } else {
+            // Opsional: Jika tidak ketemu di list, bisa ambil dari API detail
+            fetchPostDetailFromServer(postId)
+        }
+    }
+    // Fungsi tambahan jika postList kosong (misal user refresh halaman edit)
+    private fun fetchPostDetailFromServer(postId: String) {
+        viewModelScope.launch {
+            try {
+                val post = RetroFitClient.instance.getPostDetail(postId)
+                title = post.title
+                content = post.content
+                selectedCategory = post.category
+            } catch (e: Exception) {
+                errorMessage = "Gagal memuat data postingan"
+            }
+        }
+    }
+
     private suspend fun uploadFile(context: Context, uri: Uri, postId: String, type: String, token: String): String {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri)

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -99,6 +101,13 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(route = Screen.CreatePost.route) {
             CreatePostScreen(navController = navController)
         }
+        composable(
+            route = Screen.EditPost.route,
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString("postId") ?: ""
+            EditPostScreen(navController = navController, postId = postId)
+        }
     }
 }
 
@@ -125,7 +134,25 @@ fun HomeScreen(rootNavController: NavController) {
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF2196F3)
-                )
+                ),
+                actions = {
+                    IconButton(onClick = {
+                        // 1. Hapus Token di GlobalData
+                        com.example.myapplication.util.GlobalData.tokenUser = ""
+
+                        // 2. Navigasi balik ke Login dan hapus semua backstack
+                        // Gunakan "login" sesuai dengan route di NavGraph utama Anda
+                        rootNavController.navigate("login_screen") {
+                            popUpTo(0) { inclusive = true } // Menghapus semua riwayat navigasi
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Logout",
+                            tint = Color.White
+                        )
+                    }
+                }
             )
         },
         bottomBar = {
