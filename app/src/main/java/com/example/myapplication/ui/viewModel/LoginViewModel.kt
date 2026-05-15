@@ -17,10 +17,10 @@ class LoginViewModel : ViewModel() {
     var errorMessage by mutableStateOf("")
 
     fun doLogin(user: String, pass: String, onSuccess:() -> Unit){
-//        if (user.isEmpty() || pass.isEmpty()){
-//            errorMessage = "All Field Cannot Be Empty"
-//            return
-//        }
+        if (user.isEmpty() || pass.isEmpty()){
+            errorMessage = "All Field Cannot Be Empty"
+            return
+        }
 
         viewModelScope.launch {
             isLoading = true
