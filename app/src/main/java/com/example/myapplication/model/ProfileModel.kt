@@ -10,3 +10,10 @@ data class Profile(
     val photo: String? = null,
     val posts: List<Post?> = emptyList()
 )
+
+data class UpdateProfileRequest(
+    val firstName: String?,
+    val lastName: String?,
+    val username: String?,
+    val password: String? = null
+)

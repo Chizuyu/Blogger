@@ -125,7 +125,8 @@ fun ProfileItem(
                 ) {
                     Button(
                         onClick = {
-
+                            //Update Profile
+                            navController.navigate("update_profile")
                         },
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.weight(1f),

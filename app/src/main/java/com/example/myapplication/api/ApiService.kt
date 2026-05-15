@@ -6,12 +6,17 @@ import com.example.myapplication.model.Post
 import com.example.myapplication.model.Profile
 import com.example.myapplication.model.Register
 import com.example.myapplication.model.RegisterResponse
+import com.example.myapplication.model.UpdateProfileRequest
 import com.example.myapplication.model.User
+import okhttp3.MultipartBody
+import okhttp3.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService{
@@ -26,23 +31,43 @@ interface ApiService{
     @GET("api/me/post")
     suspend fun getMyPost(@Header("Authorization") token: String): List<Post>
 
-    @GET("api/me/post/liked")
-    suspend fun getLikedPost(@Header("Authorization") token: String): List<Post>
-
     @GET("api/posts/{id}")
     suspend fun getPostDetail(@Path("id") id: String): Post
 
-    @GET("api/posts/{postId}/total-count")
-    suspend fun getPostDetailLikes(@Path("postId") postId: String): Int
-
     @GET("api/me")
     suspend fun getProfile(@Header("Authorization") token: String): Profile
+
+    //Liked/Unliked Post
+
+    @GET("api/me/post/liked")
+    suspend fun getLikedPost(@Header("Authorization") token: String): List<Post>
+
+    @GET("api/posts/{postId}/total-count")
+    suspend fun getPostDetailLikes(@Path("postId") postId: String): Int
 
     @GET("api/me/is-liked-post/{postId}")
     suspend fun checkIsLiked(
         @Path("postId") postId: String,
         @Header("Authorization") token: String
     ): Boolean
+
+        //Update Profile
+
+    @GET("api/me")
+    suspend fun getCurrentUser(@Header("Authorization") token: String): User
+
+    @PUT("api/me")
+    suspend fun updateProfile(
+        @Body request: UpdateProfileRequest,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
+
+    @Multipart
+    @POST("api/me/photo")
+    suspend fun uploadProfilePhoto(
+        @Part photo: MultipartBody.Part,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
 
     //POST
 
@@ -56,9 +81,14 @@ interface ApiService{
     suspend fun toggleLike(
         @Body request: LikeRequest,
         @Header("Authorization") token: String
-    ): Unit
+    ): retrofit2.Response<Unit>
 
     //PUT
 
+    @PUT("api/me")
+    suspend fun updateProfileMap(
+        @Body data: Map<String, @JvmSuppressWildcards Any>,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
 
 }

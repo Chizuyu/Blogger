@@ -93,6 +93,9 @@ fun BottomNavGraph(navController: NavHostController) {
             val id = backStackEntry.arguments?.getString("postId") ?: ""
             DetailPostScreen(postId = id, navController = navController)
         }
+        composable(route = Screen.UpdateProfile.route) {
+            UpdateProfileScreen(navController = navController)
+        }
     }
 }
 
@@ -108,8 +111,8 @@ fun PlaceholderScreen(title: String) {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
-    val navController = rememberNavController()
+fun HomeScreen(rootNavController: NavController) {
+    val bottomNavController = rememberNavController()
 
     Scaffold(
         topBar = {
@@ -123,14 +126,14 @@ fun HomeScreen(navController: NavController) {
             )
         },
         bottomBar = {
-            BottomBar(navController = navController)
+            BottomBar(navController = bottomNavController)
         }
     )
     { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding)
         ) {
-            BottomNavGraph(navController = navController)
+            BottomNavGraph(navController = bottomNavController)
         }
     }
 }
@@ -139,7 +142,7 @@ fun HomeScreen(navController: NavController) {
 fun ScreenHome() {
     MyApplicationTheme {
         HomeScreen(
-            navController = rememberNavController()
+            rootNavController = rememberNavController()
         )
     }
 }
