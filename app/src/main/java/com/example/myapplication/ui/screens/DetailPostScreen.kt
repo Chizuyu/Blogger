@@ -64,7 +64,7 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
             ) {
                 Card(shape = RoundedCornerShape(12.dp)) {
                     AsyncImage(
-                        model = "${RetroFitClient.POST_IMAGE_URL}uploads/imageContent/${post.thumbnail}",
+                        model = "${RetroFitClient.BASE_URL}uploads/imageContent/${post.thumbnail}",
                         contentDescription = null,
                         modifier = Modifier.fillMaxWidth().height(250.dp),
                         contentScale = ContentScale.Crop,
