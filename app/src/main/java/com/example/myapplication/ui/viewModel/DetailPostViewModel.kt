@@ -54,13 +54,17 @@ class DetailPostViewModel : ViewModel() {
             try {
                 val token = "Bearer ${GlobalData.tokenUser}"
 
-                RetroFitClient.instance.toggleLike(LikeRequest(postId), token)
+                val response = RetroFitClient.instance.toggleLike(LikeRequest(postId), token)
 
-                val updatedLikesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
-                val updatedStatusReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
+                if (response.isSuccessful) {
+                    val countTask = async { RetroFitClient.instance.getPostDetailLikes(postId) }
+                    val statusTask = async { RetroFitClient.instance.checkIsLiked(postId, token) }
 
-                likeCount = updatedLikesReq.await().count
-                isLiked = updatedStatusReq.await().isLiked
+                    likeCount = countTask.await().count
+                    isLiked = statusTask.await().isLiked
+                } else {
+                    Log.e("LIKE_ERROR", "Server returned: ${response.code()}")
+                }
 
             } catch (e: Exception) {
                 Log.e("LIKE_ERROR", e.message.toString())
