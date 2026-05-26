@@ -43,11 +43,12 @@ class ProfileViewModel : ViewModel() {
             isLoading = true
             try {
                 val response = RetroFitClient.instance.getCurrentUser(token)
+
                 profileData = Profile(
                     firstName = response.firstName,
                     lastName = response.lastName,
                     username = response.username,
-                    password = response.password,
+                    password = response.password ?: "",
                     joinDate = response.joinDate,
                     dateOfBirth = response.dateOfBirth,
                     photo = response.photo
@@ -105,7 +106,7 @@ class ProfileViewModel : ViewModel() {
             val inputStream = context.contentResolver.openInputStream(uri)
             val fileBytes = inputStream?.readBytes() ?: return
             val requestFile = fileBytes.toRequestBody("image/*".toMediaTypeOrNull())
-            val body = MultipartBody.Part.createFormData("photo", "profile.jpg", requestFile)
+            val body = MultipartBody.Part.createFormData("photo", "profile_${System.currentTimeMillis()}.jpg", requestFile)
             RetroFitClient.instance.uploadProfilePhoto(body, token)
         } catch (e: Exception) {
             Log.e("UPLOAD_ERROR", e.toString())

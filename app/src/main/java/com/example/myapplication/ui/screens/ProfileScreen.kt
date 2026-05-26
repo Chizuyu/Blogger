@@ -102,7 +102,7 @@ fun ProfileItem(
                 ) {
                     Box(Modifier.fillMaxWidth().height(200.dp).padding(8.dp), contentAlignment = Alignment.Center) {
                         AsyncImage(
-                            model = "${RetroFitClient.BASE_URL}uploads/posts/${profile.photo}",
+                            model = "${RetroFitClient.BASE_URL}uploads/users/${profile.photo}",
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
                             modifier = Modifier.fillMaxSize()
