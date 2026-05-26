@@ -42,5 +42,6 @@ data class LikeCountResponse(
 )
 
 data class IsLikedResponse(
+    @SerializedName("isLiked")
     val isLiked: Boolean
 )
