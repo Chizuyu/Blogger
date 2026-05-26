@@ -8,10 +8,7 @@ data class Post(
     val content: String,
     val thumbnail: String?,
     val imageContent: String?,
-    @SerializedName("createdAt")
     val date: String,
-
-    @SerializedName("likeCount")
     val likeCount: Int,
 
     val user: Author,

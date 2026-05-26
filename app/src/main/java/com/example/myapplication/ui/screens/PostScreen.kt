@@ -72,7 +72,7 @@ fun PostItem(post: Post, navController: NavController) {
         ) {
             Column {
                 AsyncImage(
-                    model = "${RetroFitClient.BASE_URL}images/${post.thumbnail}",
+                    model = "${RetroFitClient.BASE_URL}uploads/thumbnails/${post.thumbnail}",
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
