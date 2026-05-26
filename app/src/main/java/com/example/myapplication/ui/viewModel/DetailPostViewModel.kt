@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 class DetailPostViewModel : ViewModel() {
     var post by mutableStateOf<Post?>(null)
     var likeCount by mutableIntStateOf(0)
+    var isOwnPost by mutableStateOf(false)
     var isLoading by mutableStateOf(false)
     var isLikeLoading by mutableStateOf(false)
     var isLiked by mutableStateOf(false)
@@ -28,6 +29,7 @@ class DetailPostViewModel : ViewModel() {
                 val token = "Bearer ${GlobalData.tokenUser}"
 
                 val detailReq = async { RetroFitClient.instance.getPostDetail(postId) }
+                isOwnPost = detailReq.userId == GlobalData.myUserId
                 val likesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
                 val isLikedReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
 

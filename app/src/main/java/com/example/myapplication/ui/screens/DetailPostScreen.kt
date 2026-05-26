@@ -15,11 +15,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,6 +47,20 @@ import com.example.myapplication.ui.viewModel.DetailPostViewModel
 fun DetailPostScreen(postId: String, navController: NavController, viewModel: DetailPostViewModel = viewModel()) {
     LaunchedEffect(Unit) {
         viewModel.fetchPostDetail(postId)
+    }
+    val isOwnPost = viewModel.isOwnPost
+
+    if (!isOwnPost) { // Hanya muncul jika BUKAN postingan sendiri
+        IconButton(onClick = { viewModel.likePost(postId) }) {
+            Icon(
+                imageVector = if (viewModel.isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = "Like",
+                tint = if (viewModel.isLiked) Color.Red else Color.Gray
+            )
+        }
+    } else {
+        // Opsional: Tampilkan teks bahwa ini postingan anda
+        Text("Ini postingan Anda", style = TextStyle(color = Color.Gray, fontSize = 12.sp))
     }
 
     val post = viewModel.post

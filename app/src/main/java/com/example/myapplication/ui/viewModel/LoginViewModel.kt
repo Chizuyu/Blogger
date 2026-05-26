@@ -29,6 +29,7 @@ class LoginViewModel : ViewModel() {
                 val response = RetroFitClient.instance.login(User(username = user, password = pass))
 
                 GlobalData.tokenUser = response.token
+                GlobalData.myUserId = response.body()?.id
                 onSuccess()
 
             } catch (e: retrofit2.HttpException) {
