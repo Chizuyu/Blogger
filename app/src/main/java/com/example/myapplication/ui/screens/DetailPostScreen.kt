@@ -117,24 +117,26 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
 
                 Spacer(Modifier.height(16.dp))
 
-                Button (
-                    onClick = { viewModel.likePost(post.id) },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = !viewModel.isLikeLoading,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (viewModel.isLiked) Color(0xFFE91E63) else Color(0xFF2196F3)
-                    )
-                ) {
-                    if (viewModel.isLikeLoading) {
-                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                    } else {
-                        Icon(
-                            imageVector = if (viewModel.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = null
+                if (!isOwnPost) {
+                    Button (
+                        onClick = { viewModel.likePost(post.id) },
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = !viewModel.isLikeLoading,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (viewModel.isLiked) Color(0xFFE91E63) else Color(0xFF2196F3)
                         )
-                        Spacer(Modifier.width(8.dp))
-                        Text(if (viewModel.isLiked) "Unlike Post" else "Like Post")
+                    ) {
+                        if (viewModel.isLikeLoading) {
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                        } else {
+                            Icon(
+                                imageVector = if (viewModel.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(if (viewModel.isLiked) "Unlike Post" else "Like Post")
+                        }
                     }
                 }
             }

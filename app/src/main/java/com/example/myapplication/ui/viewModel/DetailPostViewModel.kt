@@ -29,9 +29,13 @@ class DetailPostViewModel : ViewModel() {
                 val token = "Bearer ${GlobalData.tokenUser}"
 
                 val detailReq = async { RetroFitClient.instance.getPostDetail(postId) }
-                isOwnPost = detailReq.userId == GlobalData.myUserId
                 val likesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
                 val isLikedReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
+
+                val postResult = detailReq.await()
+
+                post = postResult
+                isOwnPost = postResult.user.id == GlobalData.myUserId
 
                 post = detailReq.await()
                 post = detailReq.await()
