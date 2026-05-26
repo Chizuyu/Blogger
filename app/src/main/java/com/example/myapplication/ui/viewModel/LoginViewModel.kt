@@ -16,31 +16,30 @@ class LoginViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
 
-    fun doLogin(user: String, pass: String, onSuccess:() -> Unit){
-        if (user.isEmpty() || pass.isEmpty()){
-            errorMessage = "All Field Cannot Be Empty"
+    fun doLogin(user: String, pass: String, onSuccess: () -> Unit) {
+        if (user.isEmpty() || pass.isEmpty()) {
+            errorMessage = "All Fields Cannot Be Empty"
             return
         }
 
         viewModelScope.launch {
             isLoading = true
+            errorMessage = ""
             try {
-                val users = RetroFitClient.instance.getUsers()
-                val isMatch = users.any {
-                    it.username == user &&
-                            it.password == pass
-                }
+                val response = RetroFitClient.instance.login(User(username = user, password = pass))
 
-                if (isMatch) {
-                    val response = RetroFitClient.instance.login(User(username = user, password = pass))
-                    GlobalData.tokenUser = response.token
-                    onSuccess()
-                } else {
+                GlobalData.tokenUser = response.token
+                onSuccess()
+
+            } catch (e: retrofit2.HttpException) {
+                if (e.code() == 401) {
                     errorMessage = "Invalid Username or Password"
+                } else {
+                    errorMessage = "Server Error: ${e.code()}"
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 errorMessage = "Connection Error: ${e.message}"
-            }finally {
+            } finally {
                 isLoading = false
             }
         }

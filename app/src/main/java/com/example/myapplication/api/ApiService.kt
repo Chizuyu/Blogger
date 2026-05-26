@@ -98,7 +98,7 @@ interface ApiService{
         @Header("Authorization") token: String
     ): retrofit2.Response<Unit>
 
-    @GET("api/categories")
+    @GET("api/Categories")
     suspend fun getCategories(): List<Category>
 
     @Multipart

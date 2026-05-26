@@ -34,3 +34,11 @@ data class CreatePostRequest(
     val title: String,
     val content: String
 )
+
+data class LikeCountResponse(
+    val count: Int
+)
+
+data class IsLikedResponse(
+    val isLiked: Boolean
+)
