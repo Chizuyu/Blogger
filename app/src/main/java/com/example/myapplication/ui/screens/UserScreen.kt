@@ -59,7 +59,7 @@ fun UserItem(user: User) {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 AsyncImage(
-                    model = "${RetroFitClient.BASE_URL}images/${user.photo}",
+                    model = "${RetroFitClient.BASE_URL}uploads/users/${user.photo}",
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
