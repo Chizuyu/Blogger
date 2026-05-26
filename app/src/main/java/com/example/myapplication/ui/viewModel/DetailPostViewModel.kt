@@ -32,8 +32,9 @@ class DetailPostViewModel : ViewModel() {
                 val isLikedReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
 
                 post = detailReq.await()
-                likeCount = likesReq.await()
-                isLiked = isLikedReq.await()
+                post = detailReq.await()
+                likeCount = likesReq.await().count
+                isLiked = isLikedReq.await().isLiked
             } catch (e: Exception) {
                 Log.e("DETAIL_ERROR", e.message.toString())
             } finally {
@@ -52,8 +53,8 @@ class DetailPostViewModel : ViewModel() {
                 val updatedLikesReq = async { RetroFitClient.instance.getPostDetailLikes(postId) }
                 val updatedStatusReq = async { RetroFitClient.instance.checkIsLiked(postId, token) }
 
-                likeCount = updatedLikesReq.await()
-                isLiked = updatedStatusReq.await()
+                likeCount = updatedLikesReq.await().count
+                isLiked = updatedStatusReq.await().isLiked
 
             } catch (e: Exception) {
                 Log.e("LIKE_ERROR", e.message.toString())

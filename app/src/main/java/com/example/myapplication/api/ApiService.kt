@@ -2,6 +2,8 @@ package com.example.myapplication.api
 
 import com.example.myapplication.model.Category
 import com.example.myapplication.model.CreatePostRequest
+import com.example.myapplication.model.IsLikedResponse
+import com.example.myapplication.model.LikeCountResponse
 import com.example.myapplication.model.LikeRequest
 import com.example.myapplication.model.LoginResponse
 import com.example.myapplication.model.Post
@@ -46,13 +48,13 @@ interface ApiService{
     suspend fun getLikedPost(@Header("Authorization") token: String): List<Post>
 
     @GET("api/posts/{postId}/total-count")
-    suspend fun getPostDetailLikes(@Path("postId") postId: String): Int
+    suspend fun getPostDetailLikes(@Path("postId") postId: String): LikeCountResponse
 
     @GET("api/me/is-liked-post/{postId}")
     suspend fun checkIsLiked(
         @Path("postId") postId: String,
         @Header("Authorization") token: String
-    ): Boolean
+    ): IsLikedResponse
 
     @GET("api/me")
     suspend fun getCurrentUser(@Header("Authorization") token: String): User

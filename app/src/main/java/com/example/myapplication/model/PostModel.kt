@@ -1,12 +1,17 @@
 package com.example.myapplication.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Post(
     val id: String,
     val title: String,
     val content: String,
     val thumbnail: String?,
     val imageContent: String?,
+    @SerializedName("createdAt")
     val date: String,
+
+    @SerializedName("likeCount")
     val likeCount: Int,
 
     val user: Author,
