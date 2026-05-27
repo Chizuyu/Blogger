@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import android.widget.Space
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +19,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,8 +39,13 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +63,7 @@ import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.api.RetroFitClient
 import com.example.myapplication.ui.viewModel.DetailPostViewModel
+import com.example.myapplication.util.GlobalData
 
 @Composable
 fun DetailPostScreen(postId: String, navController: NavController, viewModel: DetailPostViewModel = viewModel()) {
@@ -63,6 +73,33 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
     }
     val isOwnPost = viewModel.isOwnPost
     val post = viewModel.post
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var commentIdToDelete by remember { mutableStateOf("") }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(text = "Hapus Komentar", fontWeight = FontWeight.Bold) },
+            text = { Text(text = "Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deleteComment(postId, commentIdToDelete)
+                        showDeleteDialog = false
+                    }
+                ) {
+                    Text("OK", color = Color.Red, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Batal", color = Color.Gray)
+                }
+            },
+            shape = RoundedCornerShape(16.dp)
+        )
+    }
 
     Scaffold(
         bottomBar = {
@@ -209,7 +246,7 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                             error = painterResource(R.drawable.ic_launcher_foreground)
                         )
 
-                        Column(modifier = Modifier.padding(start = 12.dp)) {
+                        Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "${comment.user.firstName} ${comment.user.lastName}",
@@ -224,6 +261,22 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                                 )
                             }
                             Text(text = comment.content, fontSize = 14.sp)
+                        }
+                        if (comment.user.id == GlobalData.myUserId) {
+                            IconButton(
+                                onClick = {
+                                    commentIdToDelete = comment.id
+                                    showDeleteDialog = true
+                                },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Delete,
+                                    contentDescription = null,
+                                    tint = Color.Red.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
                         }
                     }
                     HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFEEEEEE))
