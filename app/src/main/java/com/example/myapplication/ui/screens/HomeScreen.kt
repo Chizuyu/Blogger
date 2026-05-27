@@ -108,6 +108,13 @@ fun BottomNavGraph(navController: NavHostController) {
             val postId = backStackEntry.arguments?.getString("postId") ?: ""
             EditPostScreen(navController = navController, postId = postId)
         }
+        composable(
+            route = Screen.UserDetail.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            UserDetailScreen(userId = userId, navController = navController)
+        }
     }
 }
 
