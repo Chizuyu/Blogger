@@ -37,6 +37,7 @@ class PostViewModel : ViewModel() {
     // API Status State
     var categories by mutableStateOf<List<Category>>(emptyList())
     var selectedCategory by mutableStateOf<Category?>(null)
+    var selectedCategoryId by mutableStateOf<String?>(null)
     var isLoading by mutableStateOf(false)
     var isCreateSuccess by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
@@ -52,16 +53,22 @@ class PostViewModel : ViewModel() {
     fun getPosts() {
         viewModelScope.launch {
             isLoading = true
-            errorMessage = ""
             try {
-                val response = RetroFitClient.instance.getPosts()
+                val response = RetroFitClient.instance.getPosts(
+                    title = searchQuery,
+                    categoryId = selectedCategoryId
+                )
                 postList = response
             } catch (e: Exception) {
-                errorMessage = "Gagal mengambil data post"
-            } finally {
-                isLoading = false
+                /* handle error */
             }
+            finally { isLoading = false }
         }
+    }
+
+    fun onCategorySelected(categoryId: String?) {
+        selectedCategoryId = categoryId
+        getPosts()
     }
 
     fun fetchCategories() {
