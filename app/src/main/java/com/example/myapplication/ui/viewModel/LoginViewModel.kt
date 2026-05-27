@@ -26,7 +26,7 @@ class LoginViewModel : ViewModel() {
             isLoading = true
             errorMessage = ""
             try {
-                val response = RetroFitClient.instance.login(User(username = user, password = pass))
+                val response = RetroFitClient.instance.login(User(username = user.trim(), password = pass.trim()))
 
                 GlobalData.tokenUser = response.token
                 GlobalData.myUserId = response.user.id ?: ""
