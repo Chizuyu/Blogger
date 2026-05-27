@@ -249,6 +249,9 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.Top
                     ) {
+                        val isCommentOwner = comment.user.id == GlobalData.myUserId
+                        val isPostOwner = viewModel.post?.user?.id == GlobalData.myUserId
+
                         AsyncImage(
                             model = "${RetroFitClient.BASE_URL}uploads/users/${comment.user.photo}",
                             contentDescription = null,
@@ -275,7 +278,7 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                             }
                             Text(text = comment.content, fontSize = 14.sp)
                         }
-                        if (comment.user.id == GlobalData.myUserId) {
+                        if (isCommentOwner || isPostOwner) {
                             IconButton(
                                 onClick = {
                                     commentIdToDelete = comment.id
@@ -292,7 +295,6 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                             }
                         }
                     }
-                    HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFEEEEEE))
                 }
 
                 Spacer(Modifier.height(64.dp))
