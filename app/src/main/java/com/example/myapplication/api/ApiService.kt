@@ -25,6 +25,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService{
 
@@ -153,4 +154,7 @@ interface ApiService{
 
     @GET("api/Users/{id}")
     suspend fun getUserById(@Path("id") id: String): User
+
+    @GET("api/Posts/search")
+    suspend fun searchPosts(@Query("query") query: String): List<Post>
 }
