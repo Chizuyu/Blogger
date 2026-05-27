@@ -205,10 +205,9 @@ class PostViewModel : ViewModel() {
             val mimeType = context.contentResolver.getType(uri) ?: "image/jpeg"
             val requestFile = fileBytes.toRequestBody(mimeType.toMediaTypeOrNull())
 
-            // SESUAI DOKUMENTASI: Field harus bernama "photo"
-            val partName = if (type == "thumbnail") "thumbnail" else "photo"
+            val partName = "file"
 
-            val body = MultipartBody.Part.createFormData(partName, "file_${type}.jpg", requestFile)
+            val body = MultipartBody.Part.createFormData(partName, "image_${type}.jpg", requestFile)
 
             val uploadResponse = if (type == "thumbnail") {
                 RetroFitClient.instance.uploadThumbnail(postId, body, token)
@@ -219,7 +218,10 @@ class PostViewModel : ViewModel() {
             if (uploadResponse.isSuccessful) {
                 "Sukses (200)"
             } else {
-                "Gagal (${uploadResponse.code()}) - ${uploadResponse.errorBody()?.string()}"
+                // Tambahkan log detail untuk debugging jika gagal
+                val errorLog = uploadResponse.errorBody()?.string()
+                Log.e("DEBUG_UPLOAD", "Gagal $type: $errorLog")
+                "Gagal (${uploadResponse.code()})"
             }
         } catch (e: Exception) {
             "Error Exception: ${e.message}"
