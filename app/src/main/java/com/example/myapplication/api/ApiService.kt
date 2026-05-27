@@ -155,6 +155,9 @@ interface ApiService{
     @GET("api/Users/{id}")
     suspend fun getUserById(@Path("id") id: String): User
 
-    @GET("api/Posts/search")
-    suspend fun searchPosts(@Query("query") query: String): List<Post>
+    @GET("api/Posts")
+    suspend fun getPosts(
+        @Query("title") title: String? = null,
+        @Query("categoryId") categoryId: String? = null
+    ): List<Post>
 }
