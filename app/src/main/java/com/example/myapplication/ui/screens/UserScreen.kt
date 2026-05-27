@@ -92,31 +92,35 @@ fun UserItem(
         }
     }
 }
+
 @Composable
 fun UserListScreen(
-        navController : NavController,
-        viewModel: UserViewModel = viewModel()
-    ) {
+    navController: NavController,
+    viewModel: UserViewModel = viewModel()
+) {
     val listUser = viewModel.userList
 
-    SearchTrigger(placeholder = "Search users...") {
-        navController.navigate("unified_search/user") // Pindah ke search tab User
-    }
+    Column(modifier = Modifier.fillMaxSize()) {
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(listUser){user ->
-            UserItem(
-                user = user,
-                modifier = Modifier.clickable {
-                    navController.navigate("user_detail/${user.id}")
-                }
-            )
+        SearchTrigger(placeholder = "Search users...") {
+            navController.navigate("unified_search/user")
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(listUser) { user ->
+                UserItem(
+                    user = user,
+                    modifier = Modifier.clickable {
+                        navController.navigate("user_detail/${user.id}")
+                    }
+                )
+            }
         }
     }
 }
