@@ -150,4 +150,7 @@ interface ApiService{
         @Path("id") id: String,
         @Header("Authorization") token: String
     ): retrofit2.Response<Unit>
+
+    @GET("api/Users/{id}")
+    suspend fun getUserById(@Path("id") id: String): User
 }
