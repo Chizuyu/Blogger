@@ -15,6 +15,7 @@ import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.HomeScreen
 import com.example.myapplication.ui.screens.SignInScreen
 import com.example.myapplication.ui.screens.UpdateProfileScreen
+import com.example.myapplication.ui.screens.UserDetailScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
@@ -61,6 +62,13 @@ fun SetupNavGraph(navController: NavHostController) {
         ) { backStackEntry ->
             val postId = backStackEntry.arguments?.getString("postId") ?: ""
             EditPostScreen(navController = navController, postId = postId)
+        }
+        composable(
+            route = "user_detail/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            UserDetailScreen(userId = userId, navController = navController)
         }
     }
 }
