@@ -115,6 +115,9 @@ fun BottomNavGraph(navController: NavHostController) {
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             UserDetailScreen(userId = userId, navController = navController)
         }
+        composable(route = Screen.SearchScreen.route) {
+            SearchScreen(navController = navController)
+        }
     }
 }
 

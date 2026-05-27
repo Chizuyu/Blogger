@@ -13,6 +13,7 @@ import com.example.myapplication.ui.screens.EditPostScreen
 // Import halaman Anda (Sesuaikan jika nama folder/package berbeda)
 import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.HomeScreen
+import com.example.myapplication.ui.screens.SearchScreen
 import com.example.myapplication.ui.screens.SignInScreen
 import com.example.myapplication.ui.screens.UpdateProfileScreen
 import com.example.myapplication.ui.screens.UserDetailScreen
@@ -69,6 +70,9 @@ fun SetupNavGraph(navController: NavHostController) {
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             UserDetailScreen(userId = userId, navController = navController)
+        }
+        composable(route = Screen.SearchScreen.route) {
+            SearchScreen(navController = navController)
         }
     }
 }
