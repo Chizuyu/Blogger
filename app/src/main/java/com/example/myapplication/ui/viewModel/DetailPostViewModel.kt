@@ -83,7 +83,6 @@ class DetailPostViewModel : ViewModel() {
     fun fetchComments(postId: String) {
         viewModelScope.launch {
             try {
-                // Pastikan Anda sudah menambahkan getComments di ApiService
                 val response = RetroFitClient.instance.getComments(postId)
                 commentList = response
             } catch (e: Exception) {
@@ -100,13 +99,28 @@ class DetailPostViewModel : ViewModel() {
                 val token = "Bearer ${GlobalData.tokenUser}"
                 val response = RetroFitClient.instance.postComment(postId, CommentRequest(commentText), token)
                 if (response.isSuccessful) {
-                    commentText = "" // Reset input
-                    fetchComments(postId) // Refresh daftar komentar
+                    commentText = ""
+                    fetchComments(postId)
                 }
             } catch (e: Exception) {
                 Log.e("SEND_COMMENT", e.message.toString())
             } finally {
                 isCommentLoading = false
+            }
+        }
+    }
+
+    fun deleteComment(postId: String, commentId: String) {
+        viewModelScope.launch {
+            try {
+                val token = "Bearer ${GlobalData.tokenUser}"
+                val response = RetroFitClient.instance.deleteComment(postId, commentId, token)
+
+                if (response.isSuccessful) {
+                    fetchComments(postId)
+                }
+            } catch (e: Exception) {
+                Log.e("DELETE_COMMENT_ERROR", e.message.toString())
             }
         }
     }
