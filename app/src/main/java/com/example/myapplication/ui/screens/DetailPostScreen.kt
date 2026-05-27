@@ -4,15 +4,20 @@ import android.widget.Space
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +71,7 @@ import com.example.myapplication.api.RetroFitClient
 import com.example.myapplication.ui.viewModel.DetailPostViewModel
 import com.example.myapplication.util.GlobalData
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailPostScreen(postId: String, navController: NavController, viewModel: DetailPostViewModel = viewModel()) {
     LaunchedEffect(Unit) {
@@ -73,6 +80,7 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
     }
     val isOwnPost = viewModel.isOwnPost
     val post = viewModel.post
+    val focusManager = LocalFocusManager.current
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var commentIdToDelete by remember { mutableStateOf("") }
@@ -103,40 +111,45 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
 
     Scaffold(
         bottomBar = {
-            Box (Modifier.imePadding()) {
-                Surface(
-                    tonalElevation = 0.dp,
-                    shadowElevation = 8.dp,
-                    color = MaterialTheme.colorScheme.surface
+            Surface(
+                tonalElevation = 0.dp,
+                shadowElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.navigationBarsIgnoringVisibility)
+                        .windowInsetsPadding(WindowInsets.ime)
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = viewModel.commentText,
-                            onValueChange = { viewModel.commentText = it },
-                            modifier = Modifier.weight(1f),
-                            placeholder = { Text("Write a comment...") },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                            ),
-                            trailingIcon = {
-                                if (viewModel.isCommentLoading) {
-                                    CircularProgressIndicator(Modifier.size(20.dp))
-                                } else {
-                                    IconButton(onClick = { viewModel.sendComment(postId) }) {
-                                        Icon(Icons.Default.Send, null, tint = Color(0xFF2196F3))
+                    OutlinedTextField(
+                        value = viewModel.commentText,
+                        onValueChange = { viewModel.commentText = it },
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text("Write a comment...") },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                        ),
+                        trailingIcon = {
+                            if (viewModel.isCommentLoading) {
+                                CircularProgressIndicator(Modifier.size(20.dp))
+                            } else {
+                                IconButton(onClick = {
+                                    if (viewModel.commentText.isNotBlank()) {
+                                        viewModel.sendComment(postId)
+                                        focusManager.clearFocus()
                                     }
+                                }) {
+                                    Icon(Icons.Default.Send, null, tint = Color(0xFF2196F3))
                                 }
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
