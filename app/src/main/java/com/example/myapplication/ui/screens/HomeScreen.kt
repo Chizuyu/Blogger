@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -146,6 +147,12 @@ fun HomeScreen(rootNavController: NavController) {
                     containerColor = Color(0xFF2196F3)
                 ),
                 actions = {
+                    IconButton(onClick = {
+                            rootNavController.navigate(Screen.SearchScreen.route)
+                        })
+                        {
+                        Icon(Icons.Default.Search, contentDescription = "Search")
+                    }
                     IconButton(onClick = {
                         // 1. Hapus Token di GlobalData
                         com.example.myapplication.util.GlobalData.tokenUser = ""
