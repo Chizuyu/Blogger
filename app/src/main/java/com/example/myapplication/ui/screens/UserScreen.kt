@@ -85,7 +85,7 @@ fun UserItem(
             )
 
             Text(
-                text = "Join Date: ${user.joinDate?.substring(0, 10)}", // Sesuaikan format tanggal
+                text = "Join Date: ${user.joinDate?.take(10)}", // Sesuaikan format tanggal
                 fontSize = 10.sp,
                 color = Color.Gray
             )
