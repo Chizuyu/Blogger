@@ -15,10 +15,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -183,23 +190,68 @@ fun PostItem(post: Post, navController: NavController) {
 
 @Composable
 fun DaftarPostScreen(navController: NavController, viewModel: PostViewModel = viewModel()) {
+    // 1. Ambil state dari ViewModel
     val listPost = viewModel.postList
     val isLoading = viewModel.isLoading
 
+    // 2. Fetch data saat pertama kali dibuka
     LaunchedEffect(Unit) {
         viewModel.getPosts()
     }
 
-    if(isLoading) {
-        CircularProgressIndicator()
-    }else{
-        LazyColumn(
+    // 3. Gunakan Column agar Search Bar berada di atas List
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        // --- SEARCH BAR ---
+        OutlinedTextField(
+            // Hubungkan value ke searchQuery di ViewModel
+            value = viewModel.searchQuery,
+            // Hubungkan onValueChange ke fungsi onSearch di ViewModel
+            onValueChange = { viewModel.onSearch(it) },
             modifier = Modifier
-                .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(listPost) {post ->
-                PostItem(post = post, navController = navController)
+                .fillMaxWidth()
+                .padding(16.dp),
+            placeholder = { Text("Search post title or content...") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                if (viewModel.searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { viewModel.onSearch("") }) {
+                        Icon(Icons.Default.Clear, contentDescription = null)
+                    }
+                }
+            },
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF2196F3),
+                unfocusedBorderColor = Color.LightGray
+            )
+        )
+
+        // --- CONTENT (LOADING / LIST) ---
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            // Tampilkan pesan jika hasil pencarian kosong
+            if (listPost.isEmpty() && viewModel.searchQuery.isNotEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No posts found", color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(listPost) { post ->
+                        PostItem(post = post, navController = navController)
+                        Spacer(modifier = Modifier.height(8.dp)) // Jarak antar item
+                    }
+                }
             }
         }
     }

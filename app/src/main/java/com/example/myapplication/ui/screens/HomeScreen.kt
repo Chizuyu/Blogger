@@ -148,12 +148,6 @@ fun HomeScreen(rootNavController: NavController) {
                 ),
                 actions = {
                     IconButton(onClick = {
-                            rootNavController.navigate(Screen.SearchScreen.route)
-                        })
-                        {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
-                    }
-                    IconButton(onClick = {
                         // 1. Hapus Token di GlobalData
                         com.example.myapplication.util.GlobalData.tokenUser = ""
 
