@@ -202,13 +202,13 @@ class PostViewModel : ViewModel() {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri)
             val fileBytes = inputStream?.readBytes() ?: return "File Null"
-
-            // Cek tipe file asli
             val mimeType = context.contentResolver.getType(uri) ?: "image/jpeg"
             val requestFile = fileBytes.toRequestBody(mimeType.toMediaTypeOrNull())
 
             // SESUAI DOKUMENTASI: Field harus bernama "photo"
-            val body = MultipartBody.Part.createFormData("photo", "image_${type}.jpg", requestFile)
+            val partName = if (type == "thumbnail") "thumbnail" else "photo"
+
+            val body = MultipartBody.Part.createFormData(partName, "file_${type}.jpg", requestFile)
 
             val uploadResponse = if (type == "thumbnail") {
                 RetroFitClient.instance.uploadThumbnail(postId, body, token)
