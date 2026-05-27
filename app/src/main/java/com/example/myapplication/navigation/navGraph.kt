@@ -64,7 +64,7 @@ fun SetupNavGraph(navController: NavHostController) {
             EditPostScreen(navController = navController, postId = postId)
         }
         composable(
-            route = "user_detail/{userId}",
+            route = Screen.UserDetail.route,
             arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
