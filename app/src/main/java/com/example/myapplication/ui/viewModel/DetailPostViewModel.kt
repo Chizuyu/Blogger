@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.api.RetroFitClient
+import com.example.myapplication.model.Comment
+import com.example.myapplication.model.CommentRequest
 import com.example.myapplication.model.LikeRequest
 import com.example.myapplication.model.Post
 import com.example.myapplication.util.GlobalData
@@ -21,6 +23,9 @@ class DetailPostViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var isLikeLoading by mutableStateOf(false)
     var isLiked by mutableStateOf(false)
+
+    var commentList by mutableStateOf<List<Comment>>(emptyList())
+    var commentText by mutableStateOf("")
 
     fun fetchPostDetail(postId: String) {
         viewModelScope.launch {
@@ -71,6 +76,29 @@ class DetailPostViewModel : ViewModel() {
             } finally {
                 isLikeLoading = false
             }
+        }
+    }
+
+    fun fetchComments(postId: String) {
+        viewModelScope.launch {
+            try {
+                commentList = RetroFitClient.instance.getComments(postId)
+            } catch (e: Exception) { Log.e("COMMENT_ERROR", e.message.toString()) }
+        }
+    }
+
+    fun sendComment(postId: String) {
+        if (commentText.isBlank()) return
+        viewModelScope.launch {
+            try {
+                val token = "Bearer ${GlobalData.tokenUser}"
+                val response = RetroFitClient.instance.postComment(postId,
+                    CommentRequest(commentText), token)
+                if (response.isSuccessful) {
+                    commentText = "" // Reset field
+                    fetchComments(postId) // Refresh list
+                }
+            } catch (e: Exception) { Log.e("POST_COMMENT_ERROR", e.message.toString()) }
         }
     }
 }
