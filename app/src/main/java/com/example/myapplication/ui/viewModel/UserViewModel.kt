@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.api.RetroFitClient
+import com.example.myapplication.model.Post
 import com.example.myapplication.model.User
 import kotlinx.coroutines.launch
 
@@ -16,6 +17,8 @@ class UserViewModel: ViewModel() {
 
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
+    var selectedUser by mutableStateOf<User?>(null)
+    var selectedUserPosts by mutableStateOf<List<Post>>(emptyList())
 
     fun getUsers(){
         viewModelScope.launch {
@@ -35,5 +38,24 @@ class UserViewModel: ViewModel() {
     }
     init {
         getUsers()
+    }
+
+    fun fetchUserDetail(userId: String) {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                // 1. Ambil data profil user
+                selectedUser = RetroFitClient.instance.getUserById(userId)
+
+                // 2. Ambil semua post dan filter yang milik user ini
+                val allPosts = RetroFitClient.instance.getPosts()
+                selectedUserPosts = allPosts.filter { it.user.id == userId }
+
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+            } finally {
+                isLoading = false
+            }
+        }
     }
 }
