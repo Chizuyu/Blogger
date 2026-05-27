@@ -27,7 +27,6 @@ class PostViewModel : ViewModel() {
     var postList by mutableStateOf<List<Post>>(emptyList())
     var title by mutableStateOf("")
     var content by mutableStateOf("")
-    var selectedCategory by mutableStateOf<Category?>(null)
 
     // File Selection State
     var thumbnailUri by mutableStateOf<Uri?>(null)
@@ -37,6 +36,7 @@ class PostViewModel : ViewModel() {
 
     // API Status State
     var categories by mutableStateOf<List<Category>>(emptyList())
+    var selectedCategory by mutableStateOf<Category?>(null)
     var isLoading by mutableStateOf(false)
     var isCreateSuccess by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
@@ -46,7 +46,7 @@ class PostViewModel : ViewModel() {
 
     init {
         getPosts()
-        fetchCategories() // Panggil ini agar dropdown terisi saat app buka
+        fetchCategories()
     }
 
     fun getPosts() {
