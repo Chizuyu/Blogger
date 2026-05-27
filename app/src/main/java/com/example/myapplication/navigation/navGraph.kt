@@ -131,21 +131,18 @@ fun UnifiedSearchScreen(
     postViewModel: PostViewModel = viewModel(),
     userViewModel: UserViewModel = viewModel()
 ) {
-    // State untuk tab: 0 untuk Post, 1 untuk User
     var selectedTabIndex by remember { mutableIntStateOf(if (initialTab == "post") 0 else 1) }
     val tabs = listOf("Posts", "Users")
     val focusRequester = remember { FocusRequester() }
 
-    // Efek agar keyboard otomatis muncul saat masuk ke layar ini
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // --- REAL Search Field ---
         OutlinedTextField(
             value = if (selectedTabIndex == 0) postViewModel.searchQuery else userViewModel.userSearchQuery,
             onValueChange = {
                 if (selectedTabIndex == 0) postViewModel.onSearch(it)
-                else userViewModel.onSearch(it) // Pastikan onSearch ada di UserViewModel juga
+                else userViewModel.onSearch(it)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -161,7 +158,6 @@ fun UnifiedSearchScreen(
             singleLine = true
         )
 
-        // --- Tabs ---
         TabRow(selectedTabIndex = selectedTabIndex, contentColor = Color(0xFF2196F3)) {
             tabs.forEachIndexed { index, title ->
                 Tab(
@@ -172,21 +168,18 @@ fun UnifiedSearchScreen(
             }
         }
 
-        // --- Result List ---
         Box(modifier = Modifier.fillMaxSize()) {
             if (selectedTabIndex == 0) {
-                // Gunakan LazyColumn yang sama dengan DaftarPostScreen Anda
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     items(postViewModel.postList) { post ->
                         PostItem(post = post, navController = navController)
-                        Spacer(modifier = Modifier.height(8.dp)) // Jarak antar item
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             } else {
-                // Gunakan LazyVerticalGrid yang sama dengan UserScreen Anda
                 LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = PaddingValues(16.dp)) {
                     items(userViewModel.userList) { user ->
                         UserItem(user = user, modifier = Modifier.clickable {
