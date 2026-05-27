@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.api.RetroFitClient
@@ -38,9 +39,12 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewModel.UserViewModel
 
 @Composable
-fun UserItem(user: User) {
+fun UserItem(
+    modifier : Modifier = Modifier,
+    user: User
+    ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(12.dp),
@@ -88,7 +92,10 @@ fun UserItem(user: User) {
     }
 }
 @Composable
-fun UserListScreen(viewModel: UserViewModel = viewModel()) {
+fun UserListScreen(
+        navController : NavController,
+        viewModel: UserViewModel = viewModel()
+    ) {
     val listUser = viewModel.userList
 
     LazyVerticalGrid(
