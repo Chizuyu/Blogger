@@ -38,6 +38,7 @@ import com.example.myapplication.R
 import com.example.myapplication.model.Post
 import com.example.myapplication.navigation.BottomBarScreen
 import com.example.myapplication.navigation.Screen
+import com.example.myapplication.navigation.UnifiedSearchScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewModel.LoginViewModel
 import com.example.myapplication.ui.viewModel.PostViewModel
@@ -118,6 +119,13 @@ fun BottomNavGraph(navController: NavHostController) {
         }
         composable(route = Screen.SearchScreen.route) {
             SearchScreen(navController = navController)
+        }
+        composable(
+            route = "unified_search/{type}",
+            arguments = listOf(navArgument("type") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type") ?: "post"
+            UnifiedSearchScreen(navController = navController, initialTab = type)
         }
     }
 }

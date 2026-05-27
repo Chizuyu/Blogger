@@ -74,5 +74,17 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(route = Screen.SearchScreen.route) {
             SearchScreen(navController = navController)
         }
+        composable(
+            route = "unified_search/{type}",
+            arguments = listOf(navArgument("type") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type") ?: "post"
+            UnifiedSearchScreen(navController = navController, initialTab = type)
+        }
     }
+}
+
+@Composable
+fun UnifiedSearchScreen(navController: NavHostController, initialTab: String) {
+    TODO("Not yet implemented")
 }
