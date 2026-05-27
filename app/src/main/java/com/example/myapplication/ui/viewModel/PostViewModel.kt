@@ -40,6 +40,9 @@ class PostViewModel : ViewModel() {
     var isCreateSuccess by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
 
+    var searchResult by mutableStateOf<List<Post>>(emptyList())
+    var searchQuery by mutableStateOf("")
+
     init {
         getPosts()
         fetchCategories() // Panggil ini agar dropdown terisi saat app buka
@@ -194,6 +197,26 @@ class PostViewModel : ViewModel() {
                 selectedCategory = post.category
             } catch (e: Exception) {
                 errorMessage = "Gagal memuat data postingan"
+            }
+        }
+    }
+
+    fun searchPosts(query: String) {
+        searchQuery = query
+        if (query.isBlank()) {
+            searchResult = emptyList()
+            return
+        }
+
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val response = RetroFitClient.instance.searchPosts(query)
+                searchResult = response
+            } catch (e: Exception) {
+                errorMessage = "Pencarian gagal"
+            } finally {
+                isLoading = false
             }
         }
     }
