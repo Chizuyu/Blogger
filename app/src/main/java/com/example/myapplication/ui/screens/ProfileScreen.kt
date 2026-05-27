@@ -166,34 +166,34 @@ fun ProfileLayout(
 fun ProfileScreen(viewModel: ProfileViewModel = viewModel(), navController: NavHostController) {
     val profile = viewModel.profileData
     val isLoading = viewModel.isLoading
-
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
-        viewModel.fetchMyPost() // Default tab pertama
+        viewModel.fetchMyPost()
     }
 
     LaunchedEffect(selectedTabIndex) {
-        if (selectedTabIndex == 0) {
-            viewModel.fetchMyPost()
-        } else {
-            viewModel.fetchLikedPost()
-        }
+        if (selectedTabIndex == 0) viewModel.fetchMyPost() else viewModel.fetchLikedPost()
     }
 
-    if (isLoading && profile == null) { // Loading hanya jika profil belum ada
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+    if (isLoading && profile == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
     } else {
         profile?.let {
-            ProfileItem(
-                profile = it,
-                viewModel = viewModel,
+            ProfileLayout(
+                firstName = it.firstName,
+                lastName = it.lastName,
+                photo = it.photo,
+                joinDate = it.joinDate,
+                dateOfBirth = it.dateOfBirth,
+                postList = viewModel.postList,
+                isOwnProfile = true,
+                isLoading = isLoading,
                 selectedTabIndex = selectedTabIndex,
                 onTabSelected = { newIndex -> selectedTabIndex = newIndex },
-                navController = navController
+                navController = navController,
+                onDeletePost = { post -> viewModel.deletePostById(post.id) }
             )
         }
     }
