@@ -54,6 +54,7 @@ import com.example.myapplication.model.Category
 import com.example.myapplication.model.Post
 import com.example.myapplication.model.User
 import com.example.myapplication.navigation.Screen
+import com.example.myapplication.ui.components.CategoryFilterBar
 import com.example.myapplication.ui.components.SearchTrigger
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewModel.PostViewModel
@@ -206,7 +207,13 @@ fun DaftarPostScreen(navController: NavController, viewModel: PostViewModel = vi
         // --- SEARCH BAR ---
         SearchTrigger(placeholder = "Search posts...") {
             navController.navigate("unified_search/post") // Pindah ke search tab Post
+
         }
+        CategoryFilterBar(
+            categories = viewModel.categories,
+            selectedId = viewModel.selectedCategoryId,
+            onCategoryClick = { viewModel.onCategorySelected(it) }
+        )
 
         // --- CONTENT (LOADING / LIST) ---
         if (isLoading) {
