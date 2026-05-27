@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -99,6 +100,9 @@ fun UserListScreen(viewModel: UserViewModel = viewModel()) {
     ) {
         items(listUser){user ->
             UserItem(user = user)
+            Modifier.clickable {
+                navController.navigate("user_detail/${user.id}")
+            }
         }
     }
 }
