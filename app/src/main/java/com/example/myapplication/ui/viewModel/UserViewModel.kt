@@ -64,18 +64,13 @@ class UserViewModel: ViewModel() {
     fun onSearch(query: String) {
         userSearchQuery = query
         searchJob?.cancel()
-
         searchJob = viewModelScope.launch {
             delay(500)
             isLoading = true
             try {
-                val response = RetroFitClient.instance.getUsers(name = query)
-                userList = response
-            } catch (e: Exception) {
-                errorMessage = "Gagal memuat user"
-            } finally {
-                isLoading = false
-            }
+                userList = RetroFitClient.instance.getUsers(name = query)
+            } catch (e: Exception) { /* handle error */ }
+            finally { isLoading = false }
         }
     }
     private var searchJob: Job? = null
