@@ -106,10 +106,12 @@ fun UserListScreen(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(listUser){user ->
-            UserItem(user = user)
-            Modifier.clickable {
-                navController.navigate("user_detail/${user.id}")
-            }
+            UserItem(
+                user = user,
+                modifier = Modifier.clickable {
+                    navController.navigate("user_detail/${user.id}")
+                }
+            )
         }
     }
 }
