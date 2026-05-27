@@ -143,4 +143,11 @@ interface ApiService{
         @Body request: CommentRequest,
         @Header("Authorization") token: String
     ): retrofit2.Response<Unit>
+
+    @DELETE("api/posts/{postId}/comments/{id}")
+    suspend fun deleteComment(
+        @Path("postId") postId: String,
+        @Path("id") id: String,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
 }
