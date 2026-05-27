@@ -54,6 +54,7 @@ import com.example.myapplication.model.Category
 import com.example.myapplication.model.Post
 import com.example.myapplication.model.User
 import com.example.myapplication.navigation.Screen
+import com.example.myapplication.ui.components.SearchTrigger
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewModel.PostViewModel
 
@@ -203,30 +204,9 @@ fun DaftarPostScreen(navController: NavController, viewModel: PostViewModel = vi
     Column(modifier = Modifier.fillMaxSize()) {
 
         // --- SEARCH BAR ---
-        OutlinedTextField(
-            // Hubungkan value ke searchQuery di ViewModel
-            value = viewModel.searchQuery,
-            // Hubungkan onValueChange ke fungsi onSearch di ViewModel
-            onValueChange = { viewModel.onSearch(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            placeholder = { Text("Search post title or content...") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            trailingIcon = {
-                if (viewModel.searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { viewModel.onSearch("") }) {
-                        Icon(Icons.Default.Clear, contentDescription = null)
-                    }
-                }
-            },
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF2196F3),
-                unfocusedBorderColor = Color.LightGray
-            )
-        )
+        SearchTrigger(placeholder = "Search posts...") {
+            navController.navigate("unified_search/post") // Pindah ke search tab Post
+        }
 
         // --- CONTENT (LOADING / LIST) ---
         if (isLoading) {

@@ -35,6 +35,7 @@ import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.api.RetroFitClient
 import com.example.myapplication.model.User
+import com.example.myapplication.ui.components.SearchTrigger
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.viewModel.UserViewModel
 
@@ -97,6 +98,10 @@ fun UserListScreen(
         viewModel: UserViewModel = viewModel()
     ) {
     val listUser = viewModel.userList
+
+    SearchTrigger(placeholder = "Search users...") {
+        navController.navigate("unified_search/user") // Pindah ke search tab User
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
