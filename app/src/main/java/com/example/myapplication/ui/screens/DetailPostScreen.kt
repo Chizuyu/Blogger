@@ -1,7 +1,9 @@
 package com.example.myapplication.ui.screens
 
+import android.widget.Space
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,24 +12,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -47,22 +55,9 @@ import com.example.myapplication.ui.viewModel.DetailPostViewModel
 fun DetailPostScreen(postId: String, navController: NavController, viewModel: DetailPostViewModel = viewModel()) {
     LaunchedEffect(Unit) {
         viewModel.fetchPostDetail(postId)
+        viewModel.fetchComments(postId)
     }
     val isOwnPost = viewModel.isOwnPost
-
-    if (!isOwnPost) { // Hanya muncul jika BUKAN postingan sendiri
-        IconButton(onClick = { viewModel.likePost(postId) }) {
-            Icon(
-                imageVector = if (viewModel.isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                contentDescription = "Like",
-                tint = if (viewModel.isLiked) Color.Red else Color.Gray
-            )
-        }
-    } else {
-        // Opsional: Tampilkan teks bahwa ini postingan anda
-        Text("Ini postingan Anda", style = TextStyle(color = Color.Gray, fontSize = 12.sp))
-    }
-
     val post = viewModel.post
 
     Scaffold(
@@ -139,6 +134,82 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                         }
                     }
                 }
+
+                Spacer(Modifier.height(24.dp))
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = "Comments (${viewModel.commentList.size})",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                viewModel.commentList.forEach { comment ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        AsyncImage(
+                            model = "${RetroFitClient.BASE_URL}uploads/users/${comment.user.photo}",
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop,
+                            error = painterResource(R.drawable.ic_launcher_foreground)
+                        )
+
+                        Column(modifier = Modifier.padding(start = 12.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "${comment.user.firstName} ${comment.user.lastName}",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = comment.createdAt.split("T")[0],
+                                    fontSize = 10.sp,
+                                    color = Color.Gray
+                                )
+                            }
+                            Text(text = comment.content, fontSize = 14.sp)
+                        }
+                    }
+                    HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFEEEEEE))
+                }
+
+                Spacer(Modifier.height(32.dp))
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = viewModel.commentText,
+                        onValueChange = { viewModel.commentText = it },
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text("Write a comment...") },
+                        shape = RoundedCornerShape(12.dp),
+                        trailingIcon = {
+                            if (viewModel.isCommentLoading) {
+                                CircularProgressIndicator(Modifier.size(20.dp))
+                            } else {
+                                IconButton(onClick = { viewModel.sendComment(postId) }) {
+                                    Icon(Icons.Default.Send, contentDescription = null, tint = Color(0xFF2196F3))
+                                }
+                            }
+                        }
+                    )
+                }
+
+                Spacer(Modifier.height(32.dp))
             }
         }
     }
