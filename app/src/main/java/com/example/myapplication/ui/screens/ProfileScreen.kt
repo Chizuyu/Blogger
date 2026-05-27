@@ -70,7 +70,11 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ProfileLayout(
-    user: User,
+    firstName: String?,
+    lastName: String?,
+    photo: String?,
+    joinDate: String?,
+    dateOfBirth: String?,
     postList: List<com.example.myapplication.model.Post>,
     isOwnProfile: Boolean,
     isLoading: Boolean,
@@ -80,47 +84,29 @@ fun ProfileLayout(
     onDeletePost: (com.example.myapplication.model.Post) -> Unit = {}
 ) {
     val tabs = if (isOwnProfile) listOf("MY POST", "LIKED POSTS") else listOf("POSTS")
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var postToDelete by remember { mutableStateOf<com.example.myapplication.model.Post?>(null) }
 
     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize()) {
         item(span = { GridItemSpan(2) }) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Header Profil (Foto, Nama, Join Date)
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                Card(modifier = Modifier.fillMaxWidth().padding(8.dp), shape = RoundedCornerShape(12.dp)) {
                     Box(Modifier.height(200.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         AsyncImage(
-                            model = "${RetroFitClient.BASE_URL}uploads/users/${user.photo}",
+                            model = "${RetroFitClient.BASE_URL}uploads/users/$photo",
                             contentDescription = null,
                             contentScale = ContentScale.Fit
                         )
                     }
                 }
-                Text(
-                    text = "${user.firstName} ${user.lastName}",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "${user.dateOfBirth?.substring(0, 10)}",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Gray
-                )
-                Text(
-                    text = "Join at ${user.joinDate?.substring(0, 10)}",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.W600,
-                    color = Color.Gray
-                )
+                Text(text = "$firstName $lastName", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(text = "${dateOfBirth?.take(10)}", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Join at ${joinDate?.take(10)}", fontSize = 14.sp, color = Color.Gray)
 
-                // TOMBOL AKSI: Hanya muncul jika profil milik sendiri
                 if (isOwnProfile) {
                     Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(onClick = { navController.navigate("update_profile") }, modifier = Modifier.weight(1f)) {
-                            Text("Update Profile")
-                        }
-                        Button(onClick = { navController.navigate("create_post") }, modifier = Modifier.weight(1f)) {
-                            Text("Add Post")
-                        }
+                        Button(onClick = { navController.navigate("update_profile") }, modifier = Modifier.weight(1f)) { Text("Update Profile") }
+                        Button(onClick = { navController.navigate("create_post") }, modifier = Modifier.weight(1f)) { Text("Add Post") }
                     }
                 } else {
                     Spacer(Modifier.height(16.dp))
@@ -128,31 +114,54 @@ fun ProfileLayout(
 
                 TabRow(selectedTabIndex = selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
-                        Tab(selected = selectedTabIndex == index, onClick = { onTabSelected(index) },
-                            text = { Text(title) })
+                        Tab(selected = selectedTabIndex == index, onClick = { onTabSelected(index) }, text = { Text(title) })
                     }
                 }
             }
         }
-        // Grid Postingan
+
         items(postList) { post ->
-            Box {
-                AsyncImage(
-                    model = "${RetroFitClient.BASE_URL}uploads/thumbnails/${post.thumbnail}",
-                    contentDescription = null,
-                    modifier = Modifier.aspectRatio(1f).clickable {
-                        navController.navigate("detail_screen/${post.id}")
-                    },
-                    contentScale = ContentScale.Crop
-                )
-                // Tombol Edit/Delete: Hanya jika isOwnProfile & Tab pertama
-                if (isOwnProfile && selectedTabIndex == 0) {
-                    // ... (Tetap gunakan IconButton Edit & Delete yang lama)
+            Card(modifier = Modifier.padding(8.dp).aspectRatio(1f)) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AsyncImage(
+                        model = "${RetroFitClient.BASE_URL}uploads/thumbnails/${post.thumbnail}",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().clickable { navController.navigate("detail_screen/${post.id}") }
+                    )
+
+                    // ICON EDIT/DELETE HANYA MUNCUL JIKA MILIK SENDIRI
+                    if (isOwnProfile && selectedTabIndex == 0) {
+                        Row(modifier = Modifier.align(Alignment.TopEnd).padding(4.dp)) {
+                            IconButton(onClick = { navController.navigate("edit_post/${post.id}") }, modifier = Modifier.size(32.dp)) {
+                                Card(colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.8f))) {
+                                    Icon(Icons.Default.Edit, null, tint = Color(0xFF2196F3), modifier = Modifier.padding(4.dp).size(20.dp))
+                                }
+                            }
+                            IconButton(onClick = { postToDelete = post; showDeleteDialog = true }, modifier = Modifier.size(32.dp)) {
+                                Card(colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.8f))) {
+                                    Icon(Icons.Default.Delete, null, tint = Color.Red, modifier = Modifier.padding(4.dp).size(20.dp))
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Hapus Postingan?") },
+            confirmButton = {
+                TextButton(onClick = { postToDelete?.let { onDeletePost(it) }; showDeleteDialog = false }) { Text("Hapus", color = Color.Red) }
+            },
+            dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text("Batal") } }
+        )
+    }
 }
+
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel = viewModel(), navController: NavHostController) {
     val profile = viewModel.profileData
