@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,8 +29,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,7 +65,44 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
     val post = viewModel.post
 
     Scaffold(
-
+        bottomBar = {
+            Box (Modifier.imePadding()) {
+                Surface(
+                    tonalElevation = 0.dp,
+                    shadowElevation = 8.dp,
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = viewModel.commentText,
+                            onValueChange = { viewModel.commentText = it },
+                            modifier = Modifier.weight(1f),
+                            placeholder = { Text("Write a comment...") },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                            ),
+                            trailingIcon = {
+                                if (viewModel.isCommentLoading) {
+                                    CircularProgressIndicator(Modifier.size(20.dp))
+                                } else {
+                                    IconButton(onClick = { viewModel.sendComment(postId) }) {
+                                        Icon(Icons.Default.Send, null, tint = Color(0xFF2196F3))
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
     ) { innerPadding ->
         if (viewModel.isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -78,7 +119,9 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                     AsyncImage(
                         model = "${RetroFitClient.BASE_URL}uploads/posts/${post?.imageContent}",
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(250.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
                         contentScale = ContentScale.Crop,
                         placeholder = painterResource(R.drawable.ic_launcher_foreground),
                         error = painterResource(R.drawable.ic_launcher_foreground)
@@ -115,7 +158,9 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                 if (!isOwnPost) {
                     Button (
                         onClick = { viewModel.likePost(post.id) },
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         enabled = !viewModel.isLikeLoading,
                         colors = ButtonDefaults.buttonColors(
@@ -145,7 +190,7 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                     fontSize = 18.sp
                 )
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(16.dp))
 
                 viewModel.commentList.forEach { comment ->
                     Row(
@@ -184,32 +229,7 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                     HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFEEEEEE))
                 }
 
-                Spacer(Modifier.height(32.dp))
-
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        value = viewModel.commentText,
-                        onValueChange = { viewModel.commentText = it },
-                        modifier = Modifier.weight(1f),
-                        placeholder = { Text("Write a comment...") },
-                        shape = RoundedCornerShape(12.dp),
-                        trailingIcon = {
-                            if (viewModel.isCommentLoading) {
-                                CircularProgressIndicator(Modifier.size(20.dp))
-                            } else {
-                                IconButton(onClick = { viewModel.sendComment(postId) }) {
-                                    Icon(Icons.Default.Send, contentDescription = null, tint = Color(0xFF2196F3))
-                                }
-                            }
-                        }
-                    )
-                }
-
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(64.dp))
             }
         }
     }
