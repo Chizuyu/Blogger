@@ -83,7 +83,7 @@ fun BottomNavGraph(navController: NavHostController) {
             DaftarPostScreen(navController = navController)
         }
         composable(route = BottomBarScreen.User.route) {
-            UserListScreen()
+            UserListScreen(navController = navController)
         }
         composable(route = BottomBarScreen.Profile.route) {
             ProfileScreen(navController = navController)
