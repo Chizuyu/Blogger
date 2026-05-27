@@ -2,6 +2,7 @@ package com.example.myapplication.ui.screens
 
 import android.widget.Space
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -73,7 +74,12 @@ import com.example.myapplication.util.GlobalData
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DetailPostScreen(postId: String, navController: NavController, viewModel: DetailPostViewModel = viewModel()) {
+fun DetailPostScreen(
+        postId: String,
+        navController: NavController,
+        viewModel: DetailPostViewModel = viewModel(),
+        modifier: Modifier = Modifier
+    ) {
     LaunchedEffect(Unit) {
         viewModel.fetchPostDetail(postId)
         viewModel.fetchComments(postId)
@@ -165,7 +171,10 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                Card(shape = RoundedCornerShape(12.dp)) {
+                Card(
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = modifier
+                    ) {
                     AsyncImage(
                         model = "${RetroFitClient.BASE_URL}uploads/posts/${post?.imageContent}",
                         contentDescription = null,
@@ -257,7 +266,10 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                             contentDescription = null,
                             modifier = Modifier
                                 .size(40.dp)
-                                .clip(CircleShape),
+                                .clip(CircleShape)
+                                .clickable {
+                                    navController.navigate("user_detail/${comment.user.id}")
+                                },
                             contentScale = ContentScale.Crop,
                             error = painterResource(R.drawable.ic_launcher_foreground)
                         )
@@ -267,7 +279,11 @@ fun DetailPostScreen(postId: String, navController: NavController, viewModel: De
                                 Text(
                                     text = "${comment.user.firstName} ${comment.user.lastName}",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    modifier = Modifier
+                                        .clickable {
+                                            navController.navigate("user_detail/${comment.user.id}")
+                                        },
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
