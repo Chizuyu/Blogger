@@ -32,7 +32,7 @@ interface ApiService{
     //GET
     @GET("api/users")
     suspend fun getUsers(
-        @Query("name") name: String? = null // Jauh lebih simpel untuk UI Search Bar
+        @Query("name") name: String? = null
     ): List<User>
 
     @GET("api/posts")
