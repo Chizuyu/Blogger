@@ -26,6 +26,7 @@ class DetailPostViewModel : ViewModel() {
 
     var commentList by mutableStateOf<List<Comment>>(emptyList())
     var commentText by mutableStateOf("")
+    var isCommentLoading by mutableStateOf(false)
 
     fun fetchPostDetail(postId: String) {
         viewModelScope.launch {
@@ -82,23 +83,31 @@ class DetailPostViewModel : ViewModel() {
     fun fetchComments(postId: String) {
         viewModelScope.launch {
             try {
-                commentList = RetroFitClient.instance.getComments(postId)
-            } catch (e: Exception) { Log.e("COMMENT_ERROR", e.message.toString()) }
+                // Pastikan Anda sudah menambahkan getComments di ApiService
+                val response = RetroFitClient.instance.getComments(postId)
+                commentList = response
+            } catch (e: Exception) {
+                Log.e("FETCH_COMMENTS", e.message.toString())
+            }
         }
     }
 
     fun sendComment(postId: String) {
         if (commentText.isBlank()) return
         viewModelScope.launch {
+            isCommentLoading = true
             try {
                 val token = "Bearer ${GlobalData.tokenUser}"
-                val response = RetroFitClient.instance.postComment(postId,
-                    CommentRequest(commentText), token)
+                val response = RetroFitClient.instance.postComment(postId, CommentRequest(commentText), token)
                 if (response.isSuccessful) {
-                    commentText = "" // Reset field
-                    fetchComments(postId) // Refresh list
+                    commentText = "" // Reset input
+                    fetchComments(postId) // Refresh daftar komentar
                 }
-            } catch (e: Exception) { Log.e("POST_COMMENT_ERROR", e.message.toString()) }
+            } catch (e: Exception) {
+                Log.e("SEND_COMMENT", e.message.toString())
+            } finally {
+                isCommentLoading = false
+            }
         }
     }
 }
