@@ -142,7 +142,7 @@ fun HomeScreen(rootNavController: NavController) {
 
                         // 2. Navigasi balik ke Login dan hapus semua backstack
                         // Gunakan "login" sesuai dengan route di NavGraph utama Anda
-                        rootNavController.navigate("login_screen") {
+                        rootNavController.navigate(Screen.Login.route) {
                             popUpTo(0) { inclusive = true } // Menghapus semua riwayat navigasi
                         }
                     }) {
