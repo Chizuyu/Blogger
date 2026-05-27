@@ -10,15 +10,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.api.RetroFitClient
 import com.example.myapplication.model.Post
 import com.example.myapplication.model.User
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class UserViewModel: ViewModel() {
     var userList by mutableStateOf<List<User>>(emptyList())
 
+
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
     var selectedUser by mutableStateOf<User?>(null)
     var userPosts by mutableStateOf<List<Post>>(emptyList())
+    var searchQuery by mutableStateOf("")
+
 
     fun getUsers(){
         viewModelScope.launch {
@@ -54,4 +58,23 @@ class UserViewModel: ViewModel() {
             }
         }
     }
+
+    fun onSearch(query: String) {
+        searchQuery = query
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(500)
+            isLoading = true
+            try {
+                val response = RetroFitClient.instance.getUsersSearch(firstName = query, lastName = query)
+                userList = response
+            } catch (e: Exception) {
+                errorMessage = "Gagal melakukan pencarian"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    private var searchJob: kotlinx.coroutines.Job? = null
 }
