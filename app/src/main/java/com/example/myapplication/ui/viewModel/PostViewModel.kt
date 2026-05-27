@@ -14,6 +14,7 @@ import com.example.myapplication.util.GlobalData
 import com.example.myapplication.util.toMultipartBody // Pastikan import helper ini
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -40,8 +41,8 @@ class PostViewModel : ViewModel() {
     var isCreateSuccess by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
 
-    var searchResult by mutableStateOf<List<Post>>(emptyList())
     var searchQuery by mutableStateOf("")
+
 
     init {
         getPosts()
@@ -201,25 +202,24 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    fun searchPosts(query: String) {
+    fun onSearch(query: String) {
         searchQuery = query
-        if (query.isBlank()) {
-            searchResult = emptyList()
-            return
-        }
 
-        viewModelScope.launch {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(500)
             isLoading = true
             try {
-                val response = RetroFitClient.instance.searchPosts(query)
-                searchResult = response
+                val response = RetroFitClient.instance.getPosts(title = query)
+                postList = response
             } catch (e: Exception) {
-                errorMessage = "Pencarian gagal"
+                errorMessage = "Gagal melakukan pencarian"
             } finally {
                 isLoading = false
             }
         }
     }
+    private var searchJob: kotlinx.coroutines.Job? = null
 
     private suspend fun uploadFile(context: Context, uri: Uri, postId: String, type: String, token: String): String {
         return try {
