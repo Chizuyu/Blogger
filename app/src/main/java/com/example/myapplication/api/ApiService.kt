@@ -1,6 +1,8 @@
 package com.example.myapplication.api
 
 import com.example.myapplication.model.Category
+import com.example.myapplication.model.Comment
+import com.example.myapplication.model.CommentRequest
 import com.example.myapplication.model.CreatePostRequest
 import com.example.myapplication.model.IsLikedResponse
 import com.example.myapplication.model.LikeCountResponse
@@ -132,4 +134,13 @@ interface ApiService{
         @Header("Authorization") token: String
     ): retrofit2.Response<Unit>
 
+    @GET("api/posts/{postId}/comments")
+    suspend fun getComments(@Path("postId") postId: String): List<Comment>
+
+    @POST("api/posts/{postId}/comments")
+    suspend fun postComment(
+        @Path("postId") postId: String,
+        @Body request: CommentRequest,
+        @Header("Authorization") token: String
+    ): retrofit2.Response<Unit>
 }
