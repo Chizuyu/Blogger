@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,40 +27,45 @@ fun UserDetailScreen(
         viewModel.fetchUserDetail(userId)
     }
 
-    val isFollowing by viewModel.isFollowing.collectAsState()
-    val currentUser = GlobalData.myUserId
+    val isFollowing = viewModel.isFollowing
+    val myId = GlobalData.myUserId
 
     if (viewModel.isLoading && viewModel.selectedUser == null) {
-        Box(
-            Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
     } else {
         viewModel.selectedUser?.let { user ->
-            ProfileLayout(
-                firstName = user.firstName,
-                lastName = user.lastName,
-                photo = user.photo,
-                joinDate = user.joinDate,
-                dateOfBirth = user.dateOfBirth,
-                postList = viewModel.userPosts,
-                isOwnProfile = false, // Tombol Update & Add Post tidak muncul
-                isLoading = viewModel.isLoading,
-                selectedTabIndex = 0,
-                onTabSelected = {},
-                navController = navController
-            )
-        }
-    }
+            Box(modifier = Modifier.fillMaxSize()) {
+                ProfileLayout(
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    photo = user.photo,
+                    joinDate = user.joinDate,
+                    dateOfBirth = user.dateOfBirth,
+                    postList = viewModel.userPosts,
+                    isOwnProfile = user.id == myId, // Dinamis: cek jika ini profil saya
+                    isLoading = viewModel.isLoading,
+                    selectedTabIndex = 0,
+                    onTabSelected = {},
+                    navController = navController
+                )
 
-    if (profileUser.id != currentUser?.id) {
-        FollowButton(
-            isFollowing = isFollowing,
-            onClick = { viewModel.toggleFollow(profileUser.id) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+                // Tampilkan tombol follow hanya jika bukan profil sendiri
+                if (user.id != myId) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter) // Letakkan di bawah
+                            .padding(16.dp)
+                    ) {
+                        FollowButton(
+                            isFollowing = isFollowing,
+                            onClick = { viewModel.toggleFollow(user.id) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
     }
 }
