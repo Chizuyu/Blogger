@@ -31,7 +31,6 @@ data class Category(
 )
 
 data class CreatePostRequest(
-    val id: String,
     val categoryId: String,
     val title: String,
     val content: String
