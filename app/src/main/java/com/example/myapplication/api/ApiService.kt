@@ -17,7 +17,6 @@ import com.example.myapplication.model.RegisterResponse
 import com.example.myapplication.model.UpdateProfileRequest
 import com.example.myapplication.model.User
 import okhttp3.MultipartBody
-import okhttp3.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -28,6 +27,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.Response
 
 interface ApiService{
 
