@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.viewModel
 
 import android.R
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,16 +81,20 @@ class UserViewModel: ViewModel() {
     private var searchJob: Job? = null
 
     fun toggleFollow(targetUserId: String) {
+        Log.d("FOLLOW_DEBUG", "Memulai toggle follow untuk: $targetUserId")
         viewModelScope.launch {
             try {
                 val response = RetroFitClient.instance.toggleFollow(targetUserId)
                 if (response.isSuccessful) {
                     isFollowing = response.body()?.isFollowing ?: false
+                    Log.d("FOLLOW_DEBUG", "Berhasil! Status isFollowing sekarang: $isFollowing")
                 } else {
-                    errorMessage = "Gagal memproses follow"
+                    errorMessage = "Gagal: Code ${response.code()} - ${response.errorBody()?.string()}"
+                    Log.e("FOLLOW_DEBUG", errorMessage)
                 }
             } catch (e: Exception) {
                 errorMessage = "Koneksi bermasalah: ${e.message}"
+                Log.e("FOLLOW_DEBUG", "Exception: ", e)
             }
         }
     }
