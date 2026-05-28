@@ -82,7 +82,9 @@ fun ProfileLayout(
     onTabSelected: (Int) -> Unit,
     navController: NavController,
     onDeletePost: (com.example.myapplication.model.Post) -> Unit = {},
-    actionButton: @Composable (() -> Unit)? = null, // Tambahkan slot ini
+    followersCount: Int = 0,
+    followingCount: Int = 0,
+    actionButton: @Composable (() -> Unit)? = null,
 ) {
     val tabs = if (isOwnProfile) listOf("MY POST", "LIKED POSTS") else listOf("POSTS")
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -100,9 +102,39 @@ fun ProfileLayout(
                         )
                     }
                 }
-                Text(text = "$firstName $lastName", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                Text(text = "${dateOfBirth?.take(10)}", fontSize = 14.sp, color = Color.Gray)
-                Text(text = "Join at ${joinDate?.take(10)}", fontSize = 14.sp, color = Color.Gray)
+                Text(
+                    text = "$firstName $lastName",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${dateOfBirth?.take(10)}",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = "Join at ${joinDate?.take(10)}",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+
+                Row(
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "$followersCount", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(text = "Followers", fontSize = 12.sp, color = Color.Gray)
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "$followingCount", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(text = "Following", fontSize = 12.sp, color = Color.Gray)
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "${postList.size}", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(text = "Posts", fontSize = 12.sp, color = Color.Gray)
+                    }
+                }
 
                 if (isOwnProfile) {
                     Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
