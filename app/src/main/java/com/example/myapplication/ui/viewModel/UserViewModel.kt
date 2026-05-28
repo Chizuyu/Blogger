@@ -95,6 +95,10 @@ class UserViewModel: ViewModel() {
                 val response = RetroFitClient.instance.toggleFollow(token, targetUserId)
                 if (response.isSuccessful) {
                     isFollowing = response.body()?.isFollowing ?: false
+
+                    fetchUserDetail(targetUserId)
+
+                    Log.d("FOLLOW_DEBUG", "Toggle sukses, merefresh data user...")
                 } else {
                     errorMessage = "Error: ${response.code()}"
                 }
