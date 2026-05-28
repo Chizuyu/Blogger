@@ -9,7 +9,9 @@ data class User(
     val dateOfBirth: String? = null,
     val joinDate: String? = null,
     val photo: String? = null,
-    val isFollowing: Boolean = false
+    val isFollowing: Boolean = false,
+    val followersCount: Int = 0,
+    val followingCount: Int = 0
 )
 
 data class LoginResponse(
