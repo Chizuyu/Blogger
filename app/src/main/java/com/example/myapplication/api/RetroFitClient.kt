@@ -13,14 +13,10 @@ object RetroFitClient {
     private val client = OkHttpClient.Builder().addInterceptor { chain ->
         val requestBuilder = chain.request().newBuilder()
 
-        // Ambil token dari tokenUser sesuai nama di doLogin Anda
         val token = GlobalData.tokenUser
 
         if (!token.isNullOrEmpty()) {
             requestBuilder.addHeader("Authorization", "Bearer $token")
-            android.util.Log.d("API_AUTH", "Sending Token: $token") // Debugging
-        } else {
-            android.util.Log.e("API_AUTH", "Token is EMPTY or NULL!")
         }
 
         chain.proceed(requestBuilder.build())
@@ -29,10 +25,9 @@ object RetroFitClient {
     val instance: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(client)
+            .client(client) // Pasang Satpamnya di sini
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
     }
-
 }
