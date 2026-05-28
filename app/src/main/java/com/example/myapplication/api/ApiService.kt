@@ -70,14 +70,14 @@ interface ApiService{
     suspend fun updateProfile(
         @Body request: UpdateProfileRequest,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @Multipart
     @POST("api/me/photo")
     suspend fun uploadProfilePhoto(
         @Part photo: MultipartBody.Part,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     //POST
 
@@ -91,13 +91,13 @@ interface ApiService{
     suspend fun toggleLike(
         @Body request: LikeRequest,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @POST("api/posts")
     suspend fun createPost(
         @Body request: CreatePostRequest,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Post>
+    ): Response<Post>
 
     @Multipart
     @POST("api/posts/{postId}/thumbnail")
@@ -105,7 +105,7 @@ interface ApiService{
         @Path("postId") postId: String,
         @Part photo: MultipartBody.Part,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @GET("api/Categories")
     suspend fun getCategories(): List<Category>
@@ -116,7 +116,7 @@ interface ApiService{
         @Path("postId") postId: String,
         @Part photo: MultipartBody.Part,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     //PUT
 
@@ -124,20 +124,20 @@ interface ApiService{
     suspend fun updateProfileMap(
         @Body data: Map<String, @JvmSuppressWildcards Any>,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @PUT("api/posts/{id}")
     suspend fun updatePost(
         @Path("id") id: String,
         @Body request: CreatePostRequest, // Re-use model yang sama
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @DELETE("api/posts/{id}")
     suspend fun deletePost(
         @Path("id") id: String,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @GET("api/posts/{postId}/comments")
     suspend fun getComments(@Path("postId") postId: String): List<Comment>
@@ -147,14 +147,14 @@ interface ApiService{
         @Path("postId") postId: String,
         @Body request: CommentRequest,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @DELETE("api/posts/{postId}/comments/{id}")
     suspend fun deleteComment(
         @Path("postId") postId: String,
         @Path("id") id: String,
         @Header("Authorization") token: String
-    ): retrofit2.Response<Unit>
+    ): Response<Unit>
 
     @GET("api/Users/{id}")
     suspend fun getUserById(@Path("id") id: String): User
