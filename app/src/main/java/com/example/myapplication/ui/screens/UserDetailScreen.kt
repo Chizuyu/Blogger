@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -44,23 +46,22 @@ fun UserDetailScreen(
                     joinDate = user.joinDate,
                     dateOfBirth = user.dateOfBirth,
                     postList = viewModel.userPosts,
-                    isOwnProfile = user.id == myId, // Dinamis: cek jika ini profil saya
+                    isOwnProfile = user.id == myId,
                     isLoading = viewModel.isLoading,
                     selectedTabIndex = 0,
                     onTabSelected = {},
                     navController = navController
                 )
 
-                // Tampilkan tombol follow hanya jika bukan profil sendiri
                 if (user.id != myId) {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.BottomCenter) // Letakkan di bawah
+                            .align(Alignment.BottomCenter)
                             .padding(16.dp)
                     ) {
                         FollowButton(
                             isFollowing = isFollowing,
-                            onClick = { viewModel.toggleFollow(user.id) },
+                            onClick = { viewModel.toggleFollow(user.id ?: "") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

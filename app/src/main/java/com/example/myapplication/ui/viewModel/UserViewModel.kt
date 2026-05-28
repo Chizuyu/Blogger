@@ -1,15 +1,20 @@
 package com.example.myapplication.ui.viewModel
 
+import android.R
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.api.RetroFitClient
 import com.example.myapplication.model.Post
 import com.example.myapplication.model.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class UserViewModel: ViewModel() {
@@ -74,7 +79,7 @@ class UserViewModel: ViewModel() {
     }
     private var searchJob: Job? = null
 
-    fun toggleFollow(targetUserId: String?) {
+    fun toggleFollow(targetUserId: String) {
         viewModelScope.launch {
             try {
                 val response = RetroFitClient.instance.toggleFollow(targetUserId)
