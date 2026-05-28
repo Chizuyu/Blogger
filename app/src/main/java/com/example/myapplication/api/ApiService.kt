@@ -167,12 +167,19 @@ interface ApiService{
 
     @POST("api/Follows/toggle/{targetUserId}")
     suspend fun toggleFollow(
+        @Header("Authorization") token: String,
         @Path("targetUserId") targetUserId: String
     ): Response<FollowToggleResponse>
 
     @GET("api/Follows/followers/{userId}")
-    suspend fun getFollowers(@Path("userId") userId: String): Response<List<FollowModel>>
+    suspend fun getFollowers(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String,
+    ): Response<List<FollowModel>>
 
     @GET("api/Follows/following/{userId}")
-    suspend fun getFollowing(@Path("userId") userId: String): Response<List<FollowModel>>
+    suspend fun getFollowing(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): Response<List<FollowModel>>
 }
