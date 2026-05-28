@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.myapplication.ui.components.FollowButton
 import com.example.myapplication.ui.viewModel.UserViewModel
 import com.example.myapplication.util.GlobalData
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun UserDetailScreen(
@@ -25,12 +27,20 @@ fun UserDetailScreen(
         viewModel: UserViewModel = viewModel()
     ) {
 
+    val isFollowing = viewModel.isFollowing
+    val myId = GlobalData.myUserId
+    val context = LocalContext.current
+
     LaunchedEffect(userId) {
         viewModel.fetchUserDetail(userId)
     }
 
-    val isFollowing = viewModel.isFollowing
-    val myId = GlobalData.myUserId
+    LaunchedEffect(viewModel.errorMessage) {
+        if (viewModel.errorMessage.isNotEmpty()) {
+            Toast.makeText(context, viewModel.errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.errorMessage = "" // Reset error setelah tampil
+        }
+    }
 
     if (viewModel.isLoading && viewModel.selectedUser == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
