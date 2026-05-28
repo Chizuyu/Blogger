@@ -228,6 +228,8 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel(), navController: NavH
                 selectedTabIndex = selectedTabIndex,
                 onTabSelected = { newIndex -> selectedTabIndex = newIndex },
                 navController = navController,
+                followersCount = it.followersCount,
+                followingCount = it.followingCount,
                 onDeletePost = { post -> viewModel.deletePostById(post.id) }
             )
         }

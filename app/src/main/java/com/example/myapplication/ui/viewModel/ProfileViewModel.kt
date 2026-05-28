@@ -51,7 +51,9 @@ class ProfileViewModel : ViewModel() {
                     password = response.password ?: "",
                     joinDate = response.joinDate,
                     dateOfBirth = response.dateOfBirth,
-                    photo = response.photo
+                    photo = response.photo,
+                    followersCount = response.followersCount,
+                    followingCount = response.followingCount
                 )
                 firstName = response.firstName ?: ""
                 lastName = response.lastName ?: ""
