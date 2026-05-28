@@ -9,7 +9,9 @@ data class Profile(
     val dateOfBirth: String? = null,
     val joinDate: String? = null,
     val photo: String? = null,
-    val posts: List<Post?> = emptyList()
+    val posts: List<Post?> = emptyList(),
+    val followersCount: Int = 0,
+    val followingCount: Int = 0
 )
 
 data class UpdateProfileRequest(
