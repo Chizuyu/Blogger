@@ -4,6 +4,8 @@ import com.example.myapplication.model.Category
 import com.example.myapplication.model.Comment
 import com.example.myapplication.model.CommentRequest
 import com.example.myapplication.model.CreatePostRequest
+import com.example.myapplication.model.FollowModel
+import com.example.myapplication.model.FollowToggleResponse
 import com.example.myapplication.model.IsLikedResponse
 import com.example.myapplication.model.LikeCountResponse
 import com.example.myapplication.model.LikeRequest
@@ -162,4 +164,15 @@ interface ApiService{
         @Query("title") title: String? = null,
         @Query("categoryId") categoryId: String? = null
     ): List<Post>
+
+    @POST("api/Follows/toggle/{targetUserId}")
+    suspend fun toggleFollow(
+        @Path("targetUserId") targetUserId: String
+    ): Response<FollowToggleResponse>
+
+    @GET("api/Follows/followers/{userId}")
+    suspend fun getFollowers(@Path("userId") userId: String): Response<List<FollowModel>>
+
+    @GET("api/Follows/following/{userId}")
+    suspend fun getFollowing(@Path("userId") userId: String): Response<List<FollowModel>>
 }
