@@ -60,22 +60,18 @@ fun UserDetailScreen(
                     isLoading = viewModel.isLoading,
                     selectedTabIndex = 0,
                     onTabSelected = {},
-                    navController = navController
-                )
+                    navController = navController,
 
-                if (user.id != myId) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(16.dp)
-                    ) {
-                        FollowButton(
-                            isFollowing = isFollowing,
-                            onClick = { viewModel.toggleFollow(user.id ?: "") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    actionButton = {
+                        if (user.id != myId) {
+                            FollowButton(
+                                isFollowing = isFollowing,
+                                onClick = { viewModel.toggleFollow(user.id ?: "") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
-                }
+                )
             }
         }
     }
