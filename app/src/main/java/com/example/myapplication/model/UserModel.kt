@@ -8,7 +8,8 @@ data class User(
     val password: String? = null,
     val dateOfBirth: String? = null,
     val joinDate: String? = null,
-    val photo: String? = null
+    val photo: String? = null,
+    val isFollowing: Boolean = false
 )
 
 data class LoginResponse(
