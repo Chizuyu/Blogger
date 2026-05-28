@@ -81,7 +81,8 @@ fun ProfileLayout(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
     navController: NavController,
-    onDeletePost: (com.example.myapplication.model.Post) -> Unit = {}
+    onDeletePost: (com.example.myapplication.model.Post) -> Unit = {},
+    actionButton: @Composable (() -> Unit)? = null, // Tambahkan slot ini
 ) {
     val tabs = if (isOwnProfile) listOf("MY POST", "LIKED POSTS") else listOf("POSTS")
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -109,7 +110,9 @@ fun ProfileLayout(
                         Button(onClick = { navController.navigate("create_post") }, modifier = Modifier.weight(1f)) { Text("Add Post") }
                     }
                 } else {
-                    Spacer(Modifier.height(16.dp))
+                    Box(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+                        actionButton?.invoke()
+                    }
                 }
 
                 TabRow(selectedTabIndex = selectedTabIndex) {
