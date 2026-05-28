@@ -55,7 +55,10 @@ class UserViewModel: ViewModel() {
         viewModelScope.launch {
             isLoading = true
             try {
-                selectedUser = RetroFitClient.instance.getUserById(userId)
+                val userFromServer = RetroFitClient.instance.getUserById(userId)
+                selectedUser = userFromServer
+
+                isFollowing = userFromServer.isFollowing
                 val allPosts = RetroFitClient.instance.getPosts()
                 userPosts = allPosts.filter { it.user.id == userId }
             } catch (e: Exception) {
