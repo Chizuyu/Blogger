@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.api.RetroFitClient
 import com.example.myapplication.model.Post
 import com.example.myapplication.model.User
+import com.example.myapplication.util.GlobalData
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,20 +85,18 @@ class UserViewModel: ViewModel() {
     private var searchJob: Job? = null
 
     fun toggleFollow(targetUserId: String) {
-        Log.d("FOLLOW_DEBUG", "Memulai toggle follow untuk: $targetUserId")
         viewModelScope.launch {
             try {
-                val response = RetroFitClient.instance.toggleFollow(targetUserId)
+                val token = "Bearer ${GlobalData.tokenUser}"
+
+                val response = RetroFitClient.instance.toggleFollow(token, targetUserId)
                 if (response.isSuccessful) {
                     isFollowing = response.body()?.isFollowing ?: false
-                    Log.d("FOLLOW_DEBUG", "Berhasil! Status isFollowing sekarang: $isFollowing")
                 } else {
-                    errorMessage = "Gagal: Code ${response.code()} - ${response.errorBody()?.string()}"
-                    Log.e("FOLLOW_DEBUG", errorMessage)
+                    errorMessage = "Error: ${response.code()}"
                 }
             } catch (e: Exception) {
-                errorMessage = "Koneksi bermasalah: ${e.message}"
-                Log.e("FOLLOW_DEBUG", "Exception: ", e)
+                errorMessage = e.message.toString()
             }
         }
     }
