@@ -70,6 +70,7 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ProfileLayout(
+    userId: String?,
     firstName: String?,
     lastName: String?,
     photo: String?,
@@ -122,7 +123,13 @@ fun ProfileLayout(
                     modifier = Modifier.padding(vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable {
+                            // Logic: Kita butuh ID user di sini, pastikan ID tersedia di ProfileLayout
+                            navController.navigate("follow_list/$userId/true")
+                        }
+                    ) {
                         Text(text = "$followersCount", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Text(text = "Followers", fontSize = 12.sp, color = Color.Gray)
                     }
@@ -230,7 +237,8 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel(), navController: NavH
                 navController = navController,
                 followersCount = it.followersCount,
                 followingCount = it.followingCount,
-                onDeletePost = { post -> viewModel.deletePostById(post.id) }
+                onDeletePost = { post -> viewModel.deletePostById(post.id) },
+                userId = it.id
             )
         }
     }

@@ -45,6 +45,7 @@ class ProfileViewModel : ViewModel() {
                 val response = RetroFitClient.instance.getCurrentUser(token)
 
                 profileData = Profile(
+                    id = response.id,
                     firstName = response.firstName,
                     lastName = response.lastName,
                     username = response.username,
