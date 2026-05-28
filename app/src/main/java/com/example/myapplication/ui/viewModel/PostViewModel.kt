@@ -126,7 +126,7 @@ class PostViewModel : ViewModel() {
                     }
 
                     imageContentUri?.let { uri ->
-                        val res = uploadFile(context, uri, actualPostId, "image", token)
+                        val res = uploadFile(context, uri, actualPostId, "imageContent", token)
                         Log.d("DEBUG_UPLOAD", "Hasil Image: $res")
                     }
 
@@ -162,7 +162,7 @@ class PostViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     // Upload gambar baru JIKA user memilih file baru (Uri tidak null)
                     thumbnailUri?.let { uploadFile(context, it, postId, "thumbnail", token) }
-                    imageContentUri?.let { uploadFile(context, it, postId, "image", token) }
+                    imageContentUri?.let { uploadFile(context, it, postId, "imageContent", token) }
 
                     isCreateSuccess = true
                 }
@@ -237,7 +237,11 @@ class PostViewModel : ViewModel() {
 
             val partName = "file"
 
-            val body = MultipartBody.Part.createFormData(partName, "image_${type}.jpg", requestFile)
+            val body = MultipartBody.Part.createFormData(
+                partName,
+                "image_${type}_${System.currentTimeMillis()}.jpg",
+                requestFile
+            )
 
             val uploadResponse = if (type == "thumbnail") {
                 RetroFitClient.instance.uploadThumbnail(postId, body, token)
