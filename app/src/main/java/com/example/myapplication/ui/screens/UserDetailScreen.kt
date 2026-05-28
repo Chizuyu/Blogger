@@ -61,7 +61,8 @@ fun UserDetailScreen(
                     selectedTabIndex = 0,
                     onTabSelected = {},
                     navController = navController,
-
+                    followersCount = user.followersCount,
+                    followingCount = user.followingCount,
                     actionButton = {
                         if (user.id != myId) {
                             FollowButton(
