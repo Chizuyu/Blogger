@@ -157,7 +157,10 @@ interface ApiService{
     ): Response<Unit>
 
     @GET("api/Users/{id}")
-    suspend fun getUserById(@Path("id") id: String): User
+    suspend fun getUserById(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+    ): User
 
     @GET("api/Posts")
     suspend fun getPosts(

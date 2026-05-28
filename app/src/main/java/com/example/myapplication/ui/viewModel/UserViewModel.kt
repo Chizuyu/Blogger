@@ -56,10 +56,13 @@ class UserViewModel: ViewModel() {
         viewModelScope.launch {
             isLoading = true
             try {
-                val userFromServer = RetroFitClient.instance.getUserById(userId)
-                selectedUser = userFromServer
+                val token = "Bearer ${GlobalData.tokenUser}"
 
+                val userFromServer = RetroFitClient.instance.getUserById(token, userId)
+
+                selectedUser = userFromServer
                 isFollowing = userFromServer.isFollowing
+
                 val allPosts = RetroFitClient.instance.getPosts()
                 userPosts = allPosts.filter { it.user.id == userId }
             } catch (e: Exception) {
