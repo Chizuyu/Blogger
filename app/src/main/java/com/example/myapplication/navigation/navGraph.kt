@@ -46,10 +46,12 @@ import androidx.navigation.navArgument
 import com.example.myapplication.ui.screens.CreatePostScreen
 import com.example.myapplication.ui.screens.DetailPostScreen
 import com.example.myapplication.ui.screens.EditPostScreen
+import com.example.myapplication.ui.screens.FollowListScreen
 // Import halaman Anda (Sesuaikan jika nama folder/package berbeda)
 import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.HomeScreen
 import com.example.myapplication.ui.screens.PostItem
+import com.example.myapplication.ui.screens.ScreenUser
 import com.example.myapplication.ui.screens.SearchScreen
 import com.example.myapplication.ui.screens.SignInScreen
 import com.example.myapplication.ui.screens.UpdateProfileScreen
@@ -115,11 +117,22 @@ fun SetupNavGraph(navController: NavHostController) {
             SearchScreen(navController = navController)
         }
         composable(
-            route = "unified_search/{type}",
+            route = Screen.UnifiedSearch.route,
             arguments = listOf(navArgument("type") { type = NavType.StringType })
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "post"
             UnifiedSearchScreen(navController = navController, initialTab = type)
+        }
+        composable(
+            route = Screen.FollowList.route,
+            arguments = listOf(
+                navArgument("userId") { type = NavType.StringType },
+                navArgument("isFollowers") { type = NavType.BoolType }
+            )
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            val isFollowers = backStackEntry.arguments?.getBoolean("isFollowers") ?: true
+            FollowListScreen(userId, isFollowers, navController)
         }
     }
 }

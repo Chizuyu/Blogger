@@ -127,6 +127,17 @@ fun BottomNavGraph(navController: NavHostController) {
             val type = backStackEntry.arguments?.getString("type") ?: "post"
             UnifiedSearchScreen(navController = navController, initialTab = type)
         }
+        composable(
+            route = Screen.FollowList.route,
+            arguments = listOf(
+                navArgument("userId") { type = NavType.StringType },
+                navArgument("isFollowers") { type = NavType.BoolType }
+            )
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            val isFollowers = backStackEntry.arguments?.getBoolean("isFollowers") ?: true
+            FollowListScreen(userId, isFollowers, navController)
+        }
     }
 }
 
