@@ -99,7 +99,10 @@ fun ProfileLayout(
                         AsyncImage(
                             model = "${RetroFitClient.BASE_URL}uploads/users/$photo",
                             contentDescription = null,
-                            contentScale = ContentScale.Fit
+                            contentScale = ContentScale.Fit,
+                            placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                            error = painterResource(R.drawable.ic_launcher_foreground)
+
                         )
                     }
                 }
@@ -169,7 +172,12 @@ fun ProfileLayout(
                         model = "${RetroFitClient.BASE_URL}uploads/thumbnails/${post.thumbnail}",
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize().clickable { navController.navigate("detail_screen/${post.id}") }
+                        modifier = Modifier.fillMaxSize().clickable {
+                            navController.navigate("detail_screen/${post.id}")
+                        },
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                        error = painterResource(R.drawable.ic_launcher_foreground)
+
                     )
 
                     // ICON EDIT/DELETE HANYA MUNCUL JIKA MILIK SENDIRI

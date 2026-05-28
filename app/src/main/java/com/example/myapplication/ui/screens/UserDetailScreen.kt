@@ -71,7 +71,8 @@ fun UserDetailScreen(
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
-                    }
+                    },
+                    userId = userId
                 )
             }
         }

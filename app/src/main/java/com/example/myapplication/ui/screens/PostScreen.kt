@@ -87,7 +87,9 @@ fun PostItem(post: Post, navController: NavController) {
                         .fillMaxWidth()
                         .height(220.dp),
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.ic_launcher_foreground)
+                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                    error = painterResource(R.drawable.ic_launcher_foreground)
+
                 )
             }
         }
