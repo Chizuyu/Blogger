@@ -19,7 +19,6 @@ fun CategoryFilterBar(
     categories: List<Category>,
     selectedId: String?,
     onCategoryClick: (String?) -> Unit,
-    viewModel: PostViewModel
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
