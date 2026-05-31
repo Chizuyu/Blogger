@@ -24,7 +24,7 @@ Aplikasi ini menerapkan pemisahan kode yang ketat untuk memastikan skalabilitas 
 ##  Cara Menjalankan Project Secara Lokal
 1. Clone repository ini ke komputer:
    ```bash
-   git clone https://Chizuyu/Blogger.git
+   git clone https://github.com/Chizuyu/Blogger.git
 
 ## Catatan Pengembangan (Development Note)
 Proyek ini pada awalnya dikembangkan secara lokal sebelum diintegrasikan dengan Version Control. Oleh karena itu, riwayat commit awal terangkum dalam satu "Initial Commit". Pengembangan fitur baru ke depannya (seperti fitur Komentar dan ASP.NET Web API) akan diimplementasikan menggunakan Git workflow yang disiplin dengan riwayat commit yang bertahap.
